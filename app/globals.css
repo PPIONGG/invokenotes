@@ -1,17 +1,27 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #09090b;
-  --color-surface: #0f0f12;
-  --color-surface-2: #16161a;
-  --color-border: #27272a;
+  /* Base surfaces — zinc, deepened into an even elevation ramp (dark dev-tool).
+     bg → surface → surface-2 → surface-3 each step a clear notch lighter. */
+  --color-background: #0a0a0c;
+  --color-surface: #131317;
+  --color-surface-2: #1c1c21;
+  --color-surface-3: #26262c;
+  --color-border: #2a2a31;
   --color-border-strong: #3f3f46;
+
+  /* Text */
   --color-foreground: #fafafa;
   --color-muted: #a1a1aa;
   --color-faint: #71717a;
+
+  /* Accent — emerald ("code dark + run green") */
   --color-accent: #34d399;
   --color-accent-strong: #10b981;
   --color-accent-foreground: #052e16;
+
+  /* Focus ring */
+  --color-ring: #34d399;
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -25,6 +35,35 @@ body {
   background: var(--color-background);
   color: var(--color-foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Visible keyboard focus everywhere (a11y); hide the ring for mouse clicks */
+:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Clickable affordance for custom controls */
+button:not(:disabled),
+[role="button"] {
+  cursor: pointer;
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Subtle grid texture for the dev-tool feel */
@@ -33,6 +72,11 @@ body {
     linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
   background-size: 32px 32px;
+}
+
+/* Minimal accent glow — use sparingly on key accents */
+.glow-accent {
+  box-shadow: 0 0 24px -6px rgba(52, 211, 153, 0.35);
 }
 
 /* Selection */
@@ -47,7 +91,7 @@ body {
   scrollbar-color: var(--color-border-strong) transparent;
 }
 
-/* Markdown / prose styling for rendered SKILL.md */
+/* Markdown / prose styling — used by MarkdownView for Example transcript results */
 .prose-skill {
   color: var(--color-foreground);
   line-height: 1.7;
@@ -88,7 +132,7 @@ body {
   padding: 0.1em 0.35em;
 }
 .prose-skill pre {
-  background: #0a0a0c;
+  background: #0d0d10;
   border: 1px solid var(--color-border);
   border-radius: 10px;
   padding: 1em 1.1em;

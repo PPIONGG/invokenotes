@@ -101,10 +101,10 @@ export function SkillBrowser({
               <div
                 key={a.slug}
                 className={cn(
-                  "rounded-xl border p-4 transition-colors",
+                  "rounded-xl border p-4 transition duration-200",
                   active
                     ? "border-accent/50 bg-accent/5"
-                    : "border-border bg-surface hover:border-border-strong",
+                    : "border-border bg-surface hover:-translate-y-0.5 hover:border-border-strong hover:shadow-lg hover:shadow-black/20",
                 )}
               >
                 <button
