@@ -104,6 +104,29 @@ export const authors: Author[] = [
       twitter: "https://twitter.com/mattpocockuk",
     },
   },
+  {
+    slug: "andrej-karpathy",
+    name: "Andrej Karpathy",
+    kind: "community",
+    title: "อดีตหัวหน้า AI ที่ Tesla · หนึ่งในทีมก่อตั้ง OpenAI · ครูสอน deep learning",
+    bio: "นักวิจัยและนักสอน AI ชื่อดัง อดีตผู้อำนวยการฝ่าย AI ที่ Tesla และเป็นหนึ่งในทีมก่อตั้ง OpenAI เจ้าของคอร์ส deep learning ยอดนิยม (เช่น CS231n และ Neural Networks: Zero to Hero) มักแชร์ข้อสังเกตเรื่องจุดพลาดที่พบบ่อยเวลาใช้ LLM เขียนโค้ด ซึ่งชุดสกิลนี้ถอดออกมาเป็นกฎปฏิบัติสำหรับ agent",
+    links: {
+      github: "https://github.com/karpathy",
+      website: "https://karpathy.ai",
+      twitter: "https://twitter.com/karpathy",
+    },
+  },
+  {
+    slug: "nextlevelbuilder",
+    name: "NextLevelBuilder",
+    kind: "community",
+    title: "ทีมทำเครื่องมือ AI สำหรับนักพัฒนา · ผู้สร้าง UI UX Pro Max",
+    bio: "ทีม/องค์กรที่ทำเครื่องมือและสกิลสาย AI coding หลายตัว (UI UX Pro Max, ClaudeKit, GoClaw ฯลฯ) เน้นยกระดับงานออกแบบ UI/UX และ workflow ของนักพัฒนา — สกิล UI UX Pro Max รวมฐานข้อมูลสไตล์ พาเลตต์สี ฟอนต์ และกฎ UX ไว้ให้ agent ใช้ตัดสินใจดีไซน์",
+    links: {
+      github: "https://github.com/nextlevelbuilder",
+      website: "https://nextlevelbuilder.io",
+    },
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -125,6 +148,41 @@ function mpSource(repoPath: string): Source {
       {
         label: "Clone repo",
         command: "git clone https://github.com/mattpocock/skills.git",
+      },
+    ],
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Source helper for the Karpathy guideline. One upstream SKILL.md
+// (karpathy-guidelines) maps to one Skill (see docs/adr/0005). The repo is
+// owned by multica-ai, who adapted Karpathy's ideas; per docs/adr/0004 that
+// adapter is disclosed only through this repo name.
+// ---------------------------------------------------------------------------
+
+function karpathySource(): Source {
+  const repoPath = "skills/karpathy-guidelines/SKILL.md";
+  return {
+    repoName: "multica-ai/andrej-karpathy-skills",
+    repoUrl: "https://github.com/multica-ai/andrej-karpathy-skills",
+    fileUrl: `https://github.com/multica-ai/andrej-karpathy-skills/blob/main/${repoPath}`,
+    path: repoPath,
+    installMethods: [
+      {
+        label: "Claude Code plugin",
+        command: "/plugin install andrej-karpathy-skills@karpathy-skills",
+        note: "ติดตั้งสกิล karpathy-guidelines ครบทั้งไฟล์ (รวมกฎทั้ง 4 ข้อในสกิลเดียว)",
+      },
+      {
+        label: "CLAUDE.md",
+        command:
+          "curl -o CLAUDE.md https://raw.githubusercontent.com/multica-ai/andrej-karpathy-skills/main/CLAUDE.md",
+        note: "ดาวน์โหลด CLAUDE.md ไปวางที่ root ของโปรเจกต์",
+      },
+      {
+        label: "Cursor rules",
+        command: "cp .cursor/rules/karpathy-guidelines.mdc <repo>/.cursor/rules/",
+        note: "ใช้ไฟล์ .cursor/rules ที่ repo เตรียมไว้ สำหรับ Cursor",
       },
     ],
   };
@@ -966,6 +1024,158 @@ echo '{"tool_input":{"command":"git push origin main"}}' | .claude/hooks/block-d
       },
     ],
     source: mpSource("skills/misc/git-guardrails-claude-code/SKILL.md"),
+  },
+
+  // -------------------------------------------------------------------------
+  // Andrej Karpathy guideline — ONE upstream SKILL.md = ONE Skill
+  // (docs/adr/0005). The four rules live in capabilities/howItWorks, not as
+  // separate entries. Attributed to Karpathy though written by multica-ai
+  // (docs/adr/0004).
+  // -------------------------------------------------------------------------
+  {
+    slug: "karpathy-guidelines",
+    name: "karpathy-guidelines",
+    tagline:
+      "กฎพฤติกรรม 4 ข้อลดจุดพลาดยอดฮิตของ LLM เวลาเขียนโค้ด — คิดก่อนเขียน, เขียนให้น้อย, แก้เฉพาะจุด, ตั้งเกณฑ์สำเร็จที่ตรวจได้",
+    authorSlug: "andrej-karpathy",
+    category: "Coding",
+    tags: ["code-quality", "llm-pitfalls", "simplicity", "refactoring", "testing", "guidelines"],
+    featured: true,
+    summary:
+      "ชุดกฎพฤติกรรมสำหรับ agent ที่ถอดมาจากข้อสังเกตของ Andrej Karpathy เรื่องจุดที่ LLM มักพลาดเวลาเขียนโค้ด รวม 4 ข้อไว้ในสกิลเดียว: คิด/เปิดสมมติฐานก่อนเขียน, เขียนเท่าที่จำเป็นไม่ over-engineer, แก้โค้ดเดิมแบบเฉพาะจุด, และแปลงโจทย์เป็นเกณฑ์สำเร็จที่ตรวจสอบได้ เน้นความรอบคอบมากกว่าความเร็ว (งานเล็กๆ ใช้ดุลพินิจได้)",
+    capabilities: [
+      "Think Before Coding — เปิดสมมติฐาน/จุดกำกวมและทักท้วงโจทย์ที่ไม่ชัด แทนการเดาเงียบๆ",
+      "Simplicity First — เขียนโค้ดขั้นต่ำที่ใช้ได้ ไม่ใส่ฟีเจอร์เผื่อ/abstraction/error handling เกินจำเป็น",
+      "Surgical Changes — แก้เฉพาะที่จำเป็น คง style เดิม ไม่ reformat หรือรื้อส่วนที่ไม่เกี่ยว",
+      "Goal-Driven Execution — แปลง requirement เป็นเกณฑ์สำเร็จที่ตรวจได้ + ใช้เทสต์ยืนยันและกัน regression",
+    ],
+    whenToUse: [
+      "อยากให้ agent รอบคอบขึ้นเวลาเขียน/รีวิว/refactor โค้ด",
+      "เจอ agent เดาโจทย์, over-engineer, reformat ทั้งไฟล์ หรือบอกว่าเสร็จโดยไม่พิสูจน์",
+      "อยากมีกฎกลางคุมคุณภาพโค้ดที่ LLM ผลิต",
+    ],
+    benefits: [
+      "ลดจุดพลาดยอดฮิตของ LLM ตั้งแต่ต้นทาง",
+      "โค้ดเล็ก ตรงประเด็น diff รีวิวง่าย",
+      "งาน 'เสร็จ' แบบมีเกณฑ์และมีเทสต์พิสูจน์",
+    ],
+    howItWorks: [
+      "ก่อนเขียน: เปิดสมมติฐาน/ความกำกวม ถ้าไม่ชัดให้ถาม",
+      "ตอนเขียน: เลือกทางที่เรียบที่สุดที่ตอบโจทย์ ไม่เติมของเกิน",
+      "ตอนแก้ของเดิม: แตะเฉพาะจุด คง style เดิม",
+      "ปิดงาน: เทียบกับเกณฑ์สำเร็จ + เพิ่มเทสต์กัน regression",
+    ],
+    examples: [
+      {
+        title: "เปิดสมมติฐานก่อนเขียน (Think Before Coding)",
+        prompt: "ช่วยเพิ่ม cache ให้ฟังก์ชัน getUser หน่อย",
+        result: `ก่อนเขียน ขอเปิดสมมติฐานที่กำกวมก่อน:
+
+- cache อยู่ที่ไหน — ในหน่วยความจำ process เดียว หรือใช้ Redis แชร์หลาย instance?
+- อายุ cache (TTL) เท่าไหร่ และต้อง invalidate ตอน user แก้ข้อมูลไหม?
+- ถ้า \`getUser\` ขว้าง error ให้ cache ค่า error ด้วยหรือไม่?
+
+3 ข้อนี้ทำให้โค้ดออกมาคนละแบบเลย ผมยังไม่เดา — ขอคำตอบก่อนแล้วค่อยเขียน`,
+      },
+      {
+        title: "เขียนให้น้อยที่สุด (Simplicity First)",
+        prompt: "โค้ดอ่าน config ของผมมี 3 ชั้น class + factory ดูเยอะไป ช่วยดูที",
+        result: `ใช่ มันเกินงาน — โจทย์แค่ "อ่านค่าจากไฟล์ JSON" แต่มี \`ConfigFactory\` + \`ConfigProvider\` + \`AbstractConfig\`
+
+รื้อเหลือเท่าที่ใช้จริง:
+
+\`\`\`ts
+import config from "./config.json";
+\`\`\`
+
+3 ชั้นนั้นไม่มีใครเรียกใช้ความสามารถพิเศษของมันเลย — ลบทิ้ง เหลือ import ตรงๆ ถ้าวันหน้าต้องโหลดหลายแหล่งค่อยเพิ่ม abstraction ตอนนั้น`,
+      },
+    ],
+    source: karpathySource(),
+  },
+
+  // -------------------------------------------------------------------------
+  // NextLevelBuilder — original work (not an adaptation, so ADR 0004 N/A).
+  // The plugin registers exactly one skill (ui-ux-pro-max); the other folders
+  // in the repo aren't part of it, so this is one entry (ADR 0005).
+  // -------------------------------------------------------------------------
+  {
+    slug: "ui-ux-pro-max",
+    name: "ui-ux-pro-max",
+    tagline:
+      "คลังปัญญาด้านดีไซน์ UI/UX ให้ agent — แนะนำสไตล์ พาเลตต์สี ฟอนต์ และกฎ UX/accessibility พร้อมสร้าง design system ให้ตรงประเภทงาน",
+    authorSlug: "nextlevelbuilder",
+    category: "Design",
+    tags: ["ui", "ux", "design-system", "accessibility", "tailwind", "shadcn"],
+    featured: true,
+    summary:
+      "สกิลให้ความรู้ด้านออกแบบ UI/UX แบบครบเครื่องสำหรับเว็บและมือถือ มีฐานข้อมูลค้นได้ทั้งสไตล์ 60+ แบบ, พาเลตต์สี 161 ชุด, คู่ฟอนต์ 57 คู่, ชนิดกราฟ 25 แบบ และกฎ UX/accessibility อีกเกือบร้อยข้อ ครอบหลาย stack (React, Next.js, Vue, Svelte, Tailwind, shadcn/ui ฯลฯ) จุดเด่นคือ 'Design System Generator' ที่วิเคราะห์โจทย์แล้วเสนอ pattern/สไตล์/สี/ฟอนต์ที่เหมาะ พร้อม anti-pattern ที่ควรเลี่ยง",
+    capabilities: [
+      "สร้าง design system ครบชุด (pattern, สไตล์, สี, ฟอนต์, effect) จากประเภทงาน/อุตสาหกรรม",
+      "ค้นฐานข้อมูลสไตล์/สี/ฟอนต์/กราฟ/กฎ UX ตาม domain ที่ต้องการ",
+      "รีวิว UI ตามเช็กลิสต์ accessibility, touch target, performance, layout",
+      "ให้แนวปฏิบัติเฉพาะ stack (React, Tailwind, shadcn/ui, มือถือ ฯลฯ)",
+    ],
+    whenToUse: [
+      "ออกแบบหน้า/คอมโพเนนต์ใหม่แล้วอยากได้สไตล์-สี-ฟอนต์ที่เข้ากับงาน",
+      "UI ดู 'ไม่โปร' แต่บอกไม่ถูกว่าเพราะอะไร",
+      "รีวิว UI เรื่อง accessibility / UX / ความสม่ำเสมอก่อนปล่อยจริง",
+    ],
+    benefits: [
+      "ตัดสินใจดีไซน์บนฐานข้อมูล + เหตุผล ไม่ใช่เดา",
+      "ได้ design system ที่สม่ำเสมอทั้งโปรเจกต์",
+      "มีเช็กลิสต์ accessibility/performance กันพลาดก่อนส่ง",
+    ],
+    howItWorks: [
+      "วิเคราะห์โจทย์: ประเภทงาน กลุ่มผู้ใช้ คีย์เวิร์ดสไตล์ stack",
+      "รัน --design-system เพื่อได้ pattern/สไตล์/สี/ฟอนต์ + anti-pattern",
+      "เจาะ domain เพิ่มตามต้องการ (style, color, ux, chart ฯลฯ)",
+      "ดึงแนวปฏิบัติเฉพาะ stack แล้วลงมือ + ไล่เช็กลิสต์ก่อนส่ง",
+    ],
+    examples: [
+      {
+        title: "สร้าง design system จากโจทย์",
+        prompt: "ทำ landing page ให้ร้านสปา ช่วยเลือกสไตล์/สี/ฟอนต์ให้หน่อย",
+        result: `เริ่มจาก \`--design-system\` ให้ระบบ reasoning เสนอชุดที่เข้ากับ "สปา/wellness":
+
+\`\`\`bash
+python3 scripts/search.py "beauty spa wellness service" --design-system -p "Serenity Spa"
+\`\`\`
+
+ได้ออกมาเช่น: pattern Hero-Centric + Social Proof, สไตล์ Soft UI, สีชมพูนวล + เซจกรีน + ทอง, ฟอนต์ Cormorant Garamond/Montserrat พร้อม anti-pattern ("เลี่ยงนีออนจัด, ไม่ใช้ dark mode") — เอาไปทำต่อได้เลย`,
+      },
+      {
+        title: "รีวิว accessibility ของหน้าเดิม",
+        prompt: "ช่วยรีวิวหน้านี้เรื่อง UX/accessibility ก่อนปล่อย",
+        result: `ไล่ตามเช็กลิสต์เรียงความสำคัญ (CRITICAL ก่อน):
+
+- contrast ตัวอักษร ≥ 4.5:1 ไหม
+- touch target ≥ 44×44px และเว้นช่อง ≥ 8px
+- ปุ่ม icon มี aria-label ไหม, focus ring เห็นชัดไหม
+- เคารพ prefers-reduced-motion ไหม
+
+เจอจุดตก เช่น ปุ่ม icon ไม่มี label → เพิ่ม aria-label; เทาบนเทา contrast ไม่ผ่าน → เปลี่ยนสีให้ผ่าน AA แล้วค่อยปล่อย`,
+      },
+    ],
+    source: {
+      repoName: "nextlevelbuilder/ui-ux-pro-max-skill",
+      repoUrl: "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill",
+      fileUrl:
+        "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/main/.claude/skills/ui-ux-pro-max/SKILL.md",
+      path: ".claude/skills/ui-ux-pro-max/SKILL.md",
+      installMethods: [
+        {
+          label: "Claude Code plugin",
+          command: "/plugin marketplace add nextlevelbuilder/ui-ux-pro-max-skill",
+          note: "แล้วรัน /plugin install ui-ux-pro-max@ui-ux-pro-max-skill",
+        },
+        {
+          label: "CLI (uipro)",
+          command: "npm install -g uipro-cli",
+          note: "แล้วรัน uipro init --ai claude ในโฟลเดอร์โปรเจกต์ (รองรับหลาย AI: cursor, windsurf, copilot ฯลฯ)",
+        },
+      ],
+    },
   },
 ];
 

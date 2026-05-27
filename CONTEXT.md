@@ -5,19 +5,19 @@ A website that collects and explains `SKILL.md` files gathered from various Git 
 ## Language
 
 **Skill**:
-A single reusable capability defined by one `SKILL.md` file (its frontmatter plus body). The atomic unit this site catalogs and explains.
+A single reusable capability defined by one `SKILL.md` file (its frontmatter plus body) — the atomic unit this site catalogs and explains, and the unit a user installs. A `SKILL.md` may bundle several rules in its body (e.g. the four `karpathy-guidelines` rules); those stay one Skill, described in its curated content, not split into separate entries (see [[docs/adr/0005]]).
 _Avoid_: Command, plugin, tool, prompt.
 
 **Author**:
-The person or organization that created a Skill. A first-class entity with its own profile page listing all of their skills. Every Author has a **kind**.
-_Avoid_: Owner, creator, user, maintainer.
+The community figure or organization a Skill is attributed to — whose thinking or work it represents. Often, but not always, the writer of the original `SKILL.md`: a Skill may be a third-party adaptation of a figure's ideas, in which case the figure is the Author and the adapter is disclosed only through the **Source** repo. A first-class entity with its own profile page. Every Author has a **kind**.
+_Avoid_: Owner, creator, user, maintainer, adapter.
 
 **Author kind**:
 What relationship an Author has to this site. Either **Community** (a notable external person or org whose skills are showcased here, e.g. Anthropic, Andrej Karpathy) or **Self** (the site creator, whose own personal skills are featured). Used to separate "skills from others" from "my own skills".
 _Avoid_: Type, owner, personal flag.
 
 **Source**:
-Where a Skill's original `SKILL.md` lives — its Git repository URL, repo name, and path within the repo. Embedded directly in the Skill; there is no standalone Repository entity. Drives the "view original / install" links.
+Where a Skill's original `SKILL.md` lives — its Git repository URL, repo name, and path within the repo. Embedded directly in the Skill; there is no standalone Repository entity. Drives the "view original / install" links. When the repo owner differs from the **Author**, the Source repo name is also where the adapter is disclosed.
 _Avoid_: Repo entity, origin, location.
 
 **Install method**:
