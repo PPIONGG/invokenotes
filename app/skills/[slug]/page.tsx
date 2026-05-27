@@ -24,6 +24,7 @@ import { AuthorAvatar } from "@/components/author-avatar";
 import { ExampleTranscript } from "@/components/example-transcript";
 import { InstallTabs } from "@/components/install-tabs";
 import { GitHubIcon } from "@/components/icons";
+import { HeroBackdrop } from "@/components/hero-backdrop";
 
 export function generateStaticParams() {
   return skills.map((s) => ({ slug: s.slug }));
@@ -56,37 +57,45 @@ export default async function SkillPage({
   const recipes = getRecipesUsingSkill(skill.slug);
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-      <Link
-        href="/"
-        className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-foreground"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        สกิลทั้งหมด
-      </Link>
+    <div>
+      {/* Header hero */}
+      <section className="relative isolate overflow-hidden border-b border-border">
+        <HeroBackdrop />
+        <div className="mx-auto max-w-6xl px-4 pb-10 pt-8 sm:px-6">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            สกิลทั้งหมด
+          </Link>
 
-      {/* Header */}
-      <div className="mt-5 flex flex-wrap items-center gap-3">
-        <CategoryBadge category={skill.category} />
-        {skill.featured && (
-          <span className="rounded-full border border-accent/30 bg-accent/10 px-2.5 py-0.5 text-xs font-medium text-accent">
-            Featured
-          </span>
-        )}
-      </div>
-      <h1 className="mt-3 font-mono text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-        {skill.name}
-      </h1>
-      <p className="mt-2 max-w-2xl text-lg leading-relaxed text-muted">
-        {skill.tagline}
-      </p>
-      <div className="mt-4 flex flex-wrap gap-1.5">
-        {skill.tags.map((tag) => (
-          <TagPill key={tag} tag={tag} />
-        ))}
-      </div>
+          <div className="reveal" style={{ animationDelay: "40ms" }}>
+            <div className="mt-5 flex flex-wrap items-center gap-3">
+              <CategoryBadge category={skill.category} />
+              {skill.featured && (
+                <span className="rounded-full border border-accent/30 bg-accent/10 px-2.5 py-0.5 text-xs font-medium text-accent">
+                  Featured
+                </span>
+              )}
+            </div>
+            <h1 className="mt-3 break-words font-mono text-2xl font-semibold tracking-tight text-foreground sm:text-5xl">
+              {skill.name}
+            </h1>
+            <p className="mt-3 max-w-2xl text-lg leading-relaxed text-muted">
+              {skill.tagline}
+            </p>
+            <div className="mt-4 flex flex-wrap gap-1.5">
+              {skill.tags.map((tag) => (
+                <TagPill key={tag} tag={tag} />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
-      <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_320px]">
+      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_320px]">
         {/* Main column */}
         <div className="min-w-0 space-y-10">
           {/* Summary */}
@@ -187,7 +196,7 @@ export default async function SkillPage({
                   <Link
                     key={recipe.slug}
                     href={`/recipes/${recipe.slug}`}
-                    className="group flex items-center justify-between gap-3 rounded-xl border border-border bg-surface p-4 transition-colors hover:border-accent/40 hover:bg-surface-2"
+                    className="group surface-hi flex items-center justify-between gap-3 rounded-xl border border-border bg-surface p-4 transition-colors hover:border-accent/40 hover:bg-surface-2"
                   >
                     <span className="min-w-0">
                       <span className="block text-sm font-medium text-foreground">
@@ -209,7 +218,7 @@ export default async function SkillPage({
             href={skill.source.fileUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex items-center justify-between rounded-xl border border-border bg-surface p-4 transition-colors hover:border-accent/40 hover:bg-surface-2"
+            className="group surface-hi card-glow flex items-center justify-between rounded-xl border border-border bg-surface p-4 transition hover:-translate-y-0.5 hover:border-accent/40 hover:bg-surface-2"
           >
             <span className="flex items-center gap-3">
               <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-border-strong bg-surface-2 text-foreground">
@@ -232,7 +241,7 @@ export default async function SkillPage({
         <aside className="space-y-6 lg:sticky lg:top-20 lg:self-start">
           {/* Author */}
           {author && (
-            <div className="rounded-xl border border-border bg-surface p-4">
+            <div className="surface-hi rounded-xl border border-border bg-surface p-4">
               <p className="mb-3 text-xs uppercase tracking-wide text-faint">
                 Author
               </p>
@@ -268,7 +277,7 @@ export default async function SkillPage({
           </div>
 
           {/* Source */}
-          <div className="rounded-xl border border-border bg-surface p-4">
+          <div className="surface-hi rounded-xl border border-border bg-surface p-4">
             <p className="mb-3 text-xs uppercase tracking-wide text-faint">
               Source
             </p>
@@ -303,6 +312,7 @@ export default async function SkillPage({
             </div>
           </div>
         </aside>
+        </div>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowUpRight, Boxes, Sparkles } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Boxes, Sparkles } from "lucide-react";
 import {
   skillsWithAuthors,
   allCategories,
@@ -9,6 +9,7 @@ import {
 import { recipes, featuredRecipes } from "@/lib/recipes";
 import { SkillBrowser } from "@/components/skill-browser";
 import { RecipeCard } from "@/components/recipe-card";
+import { HeroBackdrop } from "@/components/hero-backdrop";
 
 export default function Home() {
   const stats = [
@@ -19,31 +20,67 @@ export default function Home() {
   ];
 
   return (
-    <div className="bg-grid">
+    <div>
       {/* Hero */}
-      <section className="border-b border-border">
-        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
-          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs text-muted">
+      <section className="relative isolate overflow-hidden border-b border-border">
+        <HeroBackdrop />
+
+        <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
+          <div className="reveal inline-flex items-center gap-2 rounded-full border border-border bg-surface/70 px-3 py-1 text-xs text-muted backdrop-blur">
             <Sparkles className="h-3.5 w-3.5 text-accent" />
             คู่มือสำรวจ agent skills
           </div>
 
-          <h1 className="mt-5 max-w-2xl text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
-            เข้าใจทุก{" "}
-            <span className="font-mono text-accent">SKILL.md</span> ก่อนติดตั้ง
+          <h1
+            className="reveal mt-6 max-w-3xl text-3xl font-semibold leading-[1.12] tracking-tight text-foreground sm:text-6xl sm:leading-[1.08]"
+            style={{ animationDelay: "60ms" }}
+          >
+            <span className="inline-block">เข้าใจทุก</span>{" "}
+            <span className="inline-block font-mono text-accent">SKILL.md</span>
+            <br />
+            <span className="inline-block">ก่อนติดตั้ง</span>
           </h1>
-          <p className="mt-4 max-w-xl text-base leading-relaxed text-muted">
+          <p
+            className="reveal mt-5 max-w-xl text-base leading-relaxed text-muted sm:text-lg"
+            style={{ animationDelay: "120ms" }}
+          >
             คอลเลกชัน agent skills ที่คัดสรรจากคอมมิวนิตี้ AI และ engineering —
             ดูว่าแต่ละสกิลทำอะไร ใครเป็นคนทำ ทำงานยังไง และไปเอามาใช้ได้ที่ไหน
           </p>
 
-          <div className="mt-8 flex gap-6">
+          <div
+            className="reveal mt-8 flex flex-wrap items-center gap-3"
+            style={{ animationDelay: "180ms" }}
+          >
+            <a
+              href="#skills"
+              className="group inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent-strong"
+            >
+              สำรวจ skills
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </a>
+            <Link
+              href="/recipes"
+              className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface/70 px-4 py-2.5 text-sm font-medium text-foreground backdrop-blur transition-colors hover:border-border-strong hover:bg-surface-2"
+            >
+              <Boxes className="h-4 w-4 text-accent" />
+              ดู recipes
+            </Link>
+          </div>
+
+          <div
+            className="reveal mt-14 grid max-w-2xl grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4"
+            style={{ animationDelay: "240ms" }}
+          >
             {stats.map((s) => (
-              <div key={s.label}>
-                <div className="font-mono text-2xl font-semibold text-foreground">
+              <div
+                key={s.label}
+                className="surface-hi rounded-xl border border-border bg-surface/60 px-4 py-3 backdrop-blur transition-colors hover:border-border-strong"
+              >
+                <div className="font-mono text-2xl font-semibold tabular-nums text-foreground sm:text-3xl">
                   {s.value}
                 </div>
-                <div className="text-xs uppercase tracking-wide text-faint">
+                <div className="mt-0.5 text-[11px] uppercase tracking-wide text-faint">
                   {s.label}
                 </div>
               </div>
@@ -82,7 +119,10 @@ export default function Home() {
       )}
 
       {/* Browser */}
-      <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      <section
+        id="skills"
+        className="mx-auto max-w-6xl scroll-mt-20 px-4 py-10 sm:px-6"
+      >
         <SkillBrowser
           skills={skillsWithAuthors}
           categories={allCategories}

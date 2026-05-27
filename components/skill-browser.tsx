@@ -102,9 +102,10 @@ export function SkillBrowser({
                 key={a.slug}
                 className={cn(
                   "rounded-xl border p-4 transition duration-200",
+                  "surface-hi",
                   active
                     ? "border-accent/50 bg-accent/5"
-                    : "border-border bg-surface hover:-translate-y-0.5 hover:border-border-strong hover:shadow-lg hover:shadow-black/20",
+                    : "card-glow border-border bg-surface hover:-translate-y-0.5 hover:border-border-strong",
                 )}
               >
                 <button

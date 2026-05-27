@@ -17,7 +17,7 @@ export function RecipeCard({ recipe }: { recipe: RecipeWithSkills }) {
   return (
     <Link
       href={`/recipes/${recipe.slug}`}
-      className="group flex flex-col gap-3 rounded-xl border border-border bg-surface p-5 transition duration-200 hover:-translate-y-0.5 hover:border-border-strong hover:bg-surface-3 hover:shadow-lg hover:shadow-black/30"
+      className="group surface-hi card-glow flex flex-col gap-3 rounded-xl border border-border bg-surface p-5 transition duration-200 hover:-translate-y-0.5 hover:border-border-strong hover:bg-surface-3"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex flex-wrap items-center gap-1.5">

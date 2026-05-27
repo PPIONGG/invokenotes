@@ -6,6 +6,7 @@ import { getAuthor, getSkillsByAuthor, withAuthor, authors } from "@/lib/skills"
 import { AuthorAvatar } from "@/components/author-avatar";
 import { SkillCard } from "@/components/skill-card";
 import { GitHubIcon, XIcon } from "@/components/icons";
+import { HeroBackdrop } from "@/components/hero-backdrop";
 
 export function generateStaticParams() {
   return authors.map((a) => ({ slug: a.slug }));
@@ -55,19 +56,26 @@ export default async function AuthorPage({
   ].filter(Boolean) as { href: string; label: string; icon: React.ReactNode }[];
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-      <Link
-        href="/"
-        className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-foreground"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        สกิลทั้งหมด
-      </Link>
+    <div>
+      {/* Profile hero */}
+      <section className="relative isolate overflow-hidden border-b border-border">
+        <HeroBackdrop />
+        <div className="mx-auto max-w-6xl px-4 pb-10 pt-8 sm:px-6">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            สกิลทั้งหมด
+          </Link>
 
-      {/* Profile header */}
-      <div className="mt-6 flex flex-col gap-5 border-b border-border pb-8 sm:flex-row sm:items-start">
-        <AuthorAvatar author={author} size="lg" />
-        <div className="flex-1">
+          {/* Profile header */}
+          <div
+            className="reveal mt-6 flex flex-col gap-5 sm:flex-row sm:items-start"
+            style={{ animationDelay: "40ms" }}
+          >
+            <AuthorAvatar author={author} size="lg" />
+            <div className="flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <h1 className="text-2xl font-semibold tracking-tight text-foreground">
               {author.name}
@@ -87,33 +95,37 @@ export default async function AuthorPage({
             {author.bio}
           </p>
 
-          {links.length > 0 && (
-            <div className="mt-4 flex flex-wrap gap-2">
-              {links.map((l) => (
-                <a
-                  key={l.label}
-                  href={l.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1.5 text-sm text-muted transition-colors hover:border-border-strong hover:text-foreground"
-                >
-                  {l.icon}
-                  {l.label}
-                </a>
-              ))}
+              {links.length > 0 && (
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {links.map((l) => (
+                    <a
+                      key={l.label}
+                      href={l.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface/70 px-3 py-1.5 text-sm text-muted backdrop-blur transition-colors hover:border-border-strong hover:text-foreground"
+                    >
+                      {l.icon}
+                      {l.label}
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
-      </div>
+      </section>
 
       {/* Their skills */}
-      <h2 className="mb-4 mt-8 text-sm font-semibold uppercase tracking-wide text-foreground">
-        {authorSkills.length} สกิล
-      </h2>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {authorSkills.map((skill) => (
-          <SkillCard key={skill.slug} skill={skill} />
-        ))}
+      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+        <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-foreground">
+          {authorSkills.length} สกิล
+        </h2>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {authorSkills.map((skill) => (
+            <SkillCard key={skill.slug} skill={skill} />
+          ))}
+        </div>
       </div>
     </div>
   );

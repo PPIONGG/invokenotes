@@ -21,6 +21,7 @@ import {
 import { getSkill } from "@/lib/skills";
 import { SkillChip } from "@/components/skill-chip";
 import { RecipeSteps, type StepView } from "@/components/recipe-steps";
+import { HeroBackdrop } from "@/components/hero-backdrop";
 import {
   DifficultyBadge,
   EffortBadge,
@@ -72,31 +73,41 @@ export default async function RecipePage({
   }));
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
-      <Link
-        href="/recipes"
-        className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-foreground"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Recipes ทั้งหมด
-      </Link>
+    <div>
+      {/* Header hero */}
+      <section className="relative isolate overflow-hidden border-b border-border">
+        <HeroBackdrop />
+        <div className="mx-auto max-w-3xl px-4 pb-10 pt-8 sm:px-6">
+          <Link
+            href="/recipes"
+            className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Recipes ทั้งหมด
+          </Link>
 
-      {/* Header */}
-      <div className="mt-5 flex flex-wrap items-center gap-2">
-        <GoalBadge goal={recipe.goal} />
-        <DifficultyBadge difficulty={recipe.difficulty} />
-        <EffortBadge effort={recipe.effort} />
-      </div>
-      <h1 className="mt-3 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-        {recipe.title}
-      </h1>
-      <p className="mt-2 text-lg leading-relaxed text-muted">{recipe.tagline}</p>
-      <p className="mt-4 text-[15px] leading-relaxed text-foreground/90">
-        {recipe.intro}
-      </p>
+          <div className="reveal" style={{ animationDelay: "40ms" }}>
+            <div className="mt-5 flex flex-wrap items-center gap-2">
+              <GoalBadge goal={recipe.goal} />
+              <DifficultyBadge difficulty={recipe.difficulty} />
+              <EffortBadge effort={recipe.effort} />
+            </div>
+            <h1 className="mt-3 break-words text-3xl font-semibold tracking-tight text-foreground sm:text-5xl">
+              {recipe.title}
+            </h1>
+            <p className="mt-3 text-lg leading-relaxed text-muted">
+              {recipe.tagline}
+            </p>
+            <p className="mt-4 text-[15px] leading-relaxed text-foreground/90">
+              {recipe.intro}
+            </p>
+          </div>
+        </div>
+      </section>
 
-      {/* Parts list — every chip is a cataloged, clickable skill (ADR 0007) */}
-      <div className="mt-8 rounded-xl border border-border bg-surface p-5">
+      <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+        {/* Parts list — every chip is a cataloged, clickable skill (ADR 0007) */}
+        <div className="surface-hi rounded-xl border border-border bg-surface p-5">
         <p className="mb-3 flex items-center gap-2 text-xs uppercase tracking-wide text-faint">
           <Boxes className="h-3.5 w-3.5" />
           Skills ที่ใช้ ({parts.length})
@@ -121,7 +132,7 @@ export default async function RecipePage({
                 <Link
                   key={r.slug}
                   href={`/recipes/${r.slug}`}
-                  className="group flex items-center justify-between gap-3 rounded-xl border border-border bg-surface p-3 transition-colors hover:border-accent/40 hover:bg-surface-2"
+                  className="group surface-hi flex items-center justify-between gap-3 rounded-xl border border-border bg-surface p-3 transition-colors hover:border-accent/40 hover:bg-surface-2"
                 >
                   <span className="min-w-0">
                     <span className="block text-[11px] uppercase tracking-wide text-faint">
@@ -160,7 +171,7 @@ export default async function RecipePage({
       <RecipeSteps recipeSlug={recipe.slug} steps={stepViews} />
 
       {/* Deliverables — what you hold at the end */}
-      <section className="mt-4 rounded-xl border border-border bg-surface p-5">
+      <section className="surface-hi mt-4 rounded-xl border border-border bg-surface p-5">
         <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-foreground">
           <PackageCheck className="h-4 w-4 text-accent" />
           ผลลัพธ์ที่ได้
@@ -190,7 +201,7 @@ export default async function RecipePage({
               <Link
                 key={r.slug}
                 href={`/recipes/${r.slug}`}
-                className="group flex items-center justify-between gap-3 rounded-xl border border-border bg-surface p-4 transition-colors hover:border-accent/40 hover:bg-surface-2"
+                className="group surface-hi flex items-center justify-between gap-3 rounded-xl border border-border bg-surface p-4 transition-colors hover:border-accent/40 hover:bg-surface-2"
               >
                 <span className="min-w-0">
                   <span className="block text-sm font-medium text-foreground">
@@ -206,6 +217,7 @@ export default async function RecipePage({
           </div>
         </section>
       )}
+      </div>
     </div>
   );
 }
