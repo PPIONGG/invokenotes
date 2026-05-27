@@ -3,20 +3,22 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import {
   ArrowLeft,
+  ArrowUpRight,
   BookOpen,
   Check,
+  ChevronRight,
   ExternalLink,
   FileCode2,
   MessageSquare,
   Terminal,
+  Workflow,
+  Wrench,
   Zap,
 } from "lucide-react";
 import { getSkill, getAuthor, skills } from "@/lib/skills";
-import { getSkillBody } from "@/lib/skill-content";
 import { CategoryBadge } from "@/components/category-badge";
 import { TagPill } from "@/components/tag-pill";
 import { AuthorAvatar } from "@/components/author-avatar";
-import { MarkdownView } from "@/components/markdown-view";
 import { ExampleTranscript } from "@/components/example-transcript";
 import { InstallTabs } from "@/components/install-tabs";
 import { GitHubIcon } from "@/components/icons";
@@ -49,7 +51,6 @@ export default async function SkillPage({
   if (!skill) notFound();
 
   const author = getAuthor(skill.authorSlug);
-  const body = getSkillBody(skill.slug);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
@@ -88,18 +89,36 @@ export default async function SkillPage({
           {/* Summary */}
           <section>
             <SectionHeading icon={<BookOpen className="h-4 w-4" />}>
-              นี่คืออะไร
+              สรุปสั้น
             </SectionHeading>
             <p className="text-[15px] leading-relaxed text-foreground/90">
               {skill.summary}
             </p>
           </section>
 
+          {/* Capabilities — the "what can I do with it" answer */}
+          <section>
+            <SectionHeading icon={<Wrench className="h-4 w-4" />}>
+              ใช้ทำอะไรได้บ้าง
+            </SectionHeading>
+            <ul className="space-y-2.5">
+              {skill.capabilities.map((item) => (
+                <li
+                  key={item}
+                  className="flex gap-2.5 text-[15px] leading-relaxed text-foreground/90"
+                >
+                  <ChevronRight className="mt-1 h-4 w-4 shrink-0 text-accent" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
           {/* When to use + Benefits */}
           <div className="grid gap-6 sm:grid-cols-2">
             <section>
               <SectionHeading icon={<Check className="h-4 w-4" />}>
-                ใช้เมื่อไหร่
+                ใช้ตอนไหน
               </SectionHeading>
               <ul className="space-y-2">
                 {skill.whenToUse.map((item) => (
@@ -125,10 +144,27 @@ export default async function SkillPage({
             </section>
           </div>
 
+          {/* How it works — plain step sequence */}
+          <section>
+            <SectionHeading icon={<Workflow className="h-4 w-4" />}>
+              ทำงานยังไง
+            </SectionHeading>
+            <ol className="space-y-3">
+              {skill.howItWorks.map((step, i) => (
+                <li key={step} className="flex gap-3 text-sm text-muted">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-border-strong bg-surface-2 font-mono text-xs text-accent">
+                    {i + 1}
+                  </span>
+                  <span className="pt-0.5 leading-relaxed">{step}</span>
+                </li>
+              ))}
+            </ol>
+          </section>
+
           {/* Examples */}
           <section>
             <SectionHeading icon={<MessageSquare className="h-4 w-4" />}>
-              ลองดูการทำงาน
+              ตัวอย่างจริง
             </SectionHeading>
             <div className="space-y-4">
               {skill.examples.map((ex, i) => (
@@ -137,23 +173,28 @@ export default async function SkillPage({
             </div>
           </section>
 
-          {/* Raw SKILL.md — loaded verbatim from content/skills/<slug>.md */}
-          {body && (
-            <section>
-              <SectionHeading icon={<FileCode2 className="h-4 w-4" />}>
-                SKILL.md ต้นฉบับ
-              </SectionHeading>
-              <div className="overflow-hidden rounded-xl border border-border bg-surface">
-                <div className="flex items-center gap-2 border-b border-border bg-surface-2 px-4 py-2 font-mono text-xs text-faint">
-                  <FileCode2 className="h-3.5 w-3.5" />
+          {/* Go to source — the raw SKILL.md lives on GitHub, not rendered here */}
+          <a
+            href={skill.source.fileUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex items-center justify-between rounded-xl border border-border bg-surface p-4 transition-colors hover:border-accent/40 hover:bg-surface-2"
+          >
+            <span className="flex items-center gap-3">
+              <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-border-strong bg-surface-2 text-foreground">
+                <GitHubIcon className="h-4 w-4" />
+              </span>
+              <span>
+                <span className="block text-sm font-medium text-foreground">
+                  ดูต้นฉบับ SKILL.md บน GitHub
+                </span>
+                <span className="block font-mono text-xs text-faint">
                   {skill.source.path}
-                </div>
-                <div className="p-5">
-                  <MarkdownView>{body}</MarkdownView>
-                </div>
-              </div>
-            </section>
-          )}
+                </span>
+              </span>
+            </span>
+            <ArrowUpRight className="h-4 w-4 text-faint transition-colors group-hover:text-accent" />
+          </a>
         </div>
 
         {/* Sidebar */}

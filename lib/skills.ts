@@ -3,10 +3,10 @@
 //   Skill, Author (+ kind), Source (+ install methods), Example, Category, Tag.
 //
 // Content is Thai-primary (see docs/adr/0002): curated prose is Thai, while
-// skill names, Category values, Tags and code stay English. The verbatim
-// SKILL.md body is NOT stored here — it lives in content/skills/<slug>.md and
-// is read server-side via lib/skill-content.ts, keeping this module
-// client-safe (no `fs`).
+// skill names, Category values, Tags and code stay English.
+//
+// The detail page is fully curated and links out to the source — the raw
+// SKILL.md is NOT rendered (see docs/adr/0003, which supersedes 0001).
 // ---------------------------------------------------------------------------
 
 /** Whether an Author is an external community figure or the site creator. */
@@ -67,15 +67,21 @@ export interface Skill {
   slug: string;
   /** Frontmatter `name` — stays English. */
   name: string;
-  /** Thai one-liner. */
+  /** Thai one-liner, outcome-focused. */
   tagline: string;
   authorSlug: string;
   category: Category;
   tags: string[];
-  /** Curated Thai explanation of what the skill is. */
+  /** Curated Thai explanation of what the skill is (2-3 plain sentences). */
   summary: string;
+  /** Concrete things the skill does for you — plain Thai. */
+  capabilities: string[];
+  /** Situations in which you'd reach for it. */
   whenToUse: string[];
+  /** The value you gain. */
   benefits: string[];
+  /** Plain-language step sequence of how it operates. */
+  howItWorks: string[];
   examples: Example[];
   source: Source;
   featured?: boolean;
@@ -132,28 +138,41 @@ export const skills: Skill[] = [
   {
     slug: "tdd",
     name: "tdd",
-    tagline: "พัฒนาฟีเจอร์และแก้บั๊กด้วยลูป red-green-refactor ทีละ test",
+    tagline:
+      "เขียนฟีเจอร์หรือแก้บั๊กแบบเทสต์นำ — เขียนเทสต์ให้พังก่อน แล้วค่อยเขียนโค้ดให้ผ่านทีละขั้น",
     authorSlug: "matt-pocock",
     category: "Coding",
     tags: ["testing", "red-green-refactor", "tdd", "workflow", "quality"],
     featured: true,
     summary:
-      "บังคับให้เขียน test สลับกับ implementation ทีละตัว (vertical slice / tracer bullet) แทนที่จะเขียน test รวดเดียวแล้วค่อยเขียนโค้ด เน้น test ที่ตรวจ behavior ผ่าน public interface ไม่ผูกกับ implementation จึงรอดจากการ refactor และอ่านได้เหมือน spec ของระบบ",
+      "วิธีทำงานแบบ 'เทสต์นำโค้ด' ที่บังคับให้เขียนเทสต์ทีละตัวสลับกับโค้ดจริง แทนการเขียนเทสต์รวดเดียวแล้วค่อยโค้ด เทสต์ที่ได้จะตรวจ 'พฤติกรรม' ผ่านหน้าบ้านจริง ไม่ผูกกับโครงสร้างภายใน เลยไม่พังเวลา refactor และอ่านได้เหมือนสเปกของระบบ",
+    capabilities: [
+      "พาเขียนเทสต์–โค้ด–รีแฟคเตอร์ ทีละรอบ (red → green → refactor)",
+      "แปลงบั๊กที่เจอให้กลายเป็นเทสต์ที่ reproduce ได้ก่อนลงมือแก้",
+      "ช่วยเลือกพฤติกรรมสำคัญมาทดสอบ แทนที่จะทดสอบทุกอย่างจนเฝือ",
+      "เตือนเมื่อเทสต์ไปผูกกับ implementation (สัญญาณว่าจะพังตอน refactor)",
+    ],
     whenToUse: [
-      "สร้างฟีเจอร์ใหม่โดยให้ test เป็นตัวกำหนด spec",
-      "แก้บั๊ก โดยเขียน test ที่ reproduce บั๊กก่อน",
+      "สร้างฟีเจอร์ใหม่โดยให้เทสต์เป็นตัวกำหนดสเปก",
+      "แก้บั๊ก โดยเขียนเทสต์ที่ reproduce บั๊กก่อน",
       "งานที่ regression มีราคาแพง อยากได้ตาข่ายกันพลาด",
     ],
     benefits: [
-      "ทุกบรรทัดของ implementation มี test รองรับ",
-      "test รอดจากการ refactor เพราะตรวจ behavior ไม่ใช่โครงสร้างภายใน",
-      "ได้ spec ที่อ่านรู้เรื่องเป็นผลพลอยได้",
+      "ทุกบรรทัดของโค้ดมีเทสต์รองรับ",
+      "เทสต์รอดจากการ refactor เพราะตรวจพฤติกรรม ไม่ใช่โครงสร้างภายใน",
+      "ได้สเปกที่อ่านรู้เรื่องเป็นผลพลอยได้",
+    ],
+    howItWorks: [
+      "ตกลงกันก่อนว่าจะทดสอบพฤติกรรมไหนบ้าง เรียงตามความสำคัญ",
+      "เขียนเทสต์ 1 ตัวให้ fail ด้วยเหตุผลที่ถูกต้อง (RED)",
+      "เขียนโค้ดน้อยที่สุดให้เทสต์ผ่าน (GREEN)",
+      "รีแฟคเตอร์เฉพาะตอนเขียวแล้ว แล้ววนทำตัวถัดไป",
     ],
     examples: [
       {
-        title: "เพิ่มฟังก์ชัน checkout ด้วย TDD",
+        title: "เพิ่มฟังก์ชัน checkout",
         prompt: "ช่วยเพิ่มฟังก์ชัน checkout ที่ปฏิเสธตะกร้าว่างด้วย TDD",
-        result: `เริ่มด้วย tracer bullet — เขียน test เดียวก่อน (RED):
+        result: `เริ่มด้วย tracer bullet — เขียนเทสต์เดียวก่อน (RED):
 
 \`\`\`ts
 test("rejects checkout with an empty cart", () => {
@@ -163,15 +182,22 @@ test("rejects checkout with an empty cart", () => {
 
 รันแล้ว ❌ fail เพราะยังไม่มี \`checkout\` — fail ด้วยเหตุผลที่ถูกต้อง
 
-GREEN: เขียนโค้ดน้อยที่สุดให้ผ่าน:
+GREEN: เขียนโค้ดน้อยที่สุดให้ผ่าน แล้วค่อยวนเขียนเทสต์ตัวถัดไป (เช่น คิดยอดรวม) ทีละรอบ — ไม่เขียนเทสต์รวดเดียวทั้งหมด`,
+      },
+      {
+        title: "แก้บั๊กแบบ TDD",
+        prompt: "slugify('  a  b  ') คืน 'a--b' มี dash ซ้ำ ช่วยแก้แบบ TDD",
+        result: `ก่อนแก้ จับบั๊กเป็นเทสต์ที่ fail ก่อน (RED):
 
 \`\`\`ts
-export function checkout(cart) {
-  if (cart.items.length === 0) throw new Error("Cart is empty");
-}
+test("collapses repeated separators", () => {
+  expect(slugify("  a  b  ")).toBe("a-b");
+});
 \`\`\`
 
-✅ ผ่าน จากนั้นค่อยเขียน test ตัวถัดไป (เช่น คิดยอดรวม) วนทีละรอบ — ไม่เขียน test รวดเดียวทั้งหมด เพราะนั่นจะได้ test ที่ทดสอบ *สิ่งที่จินตนาการ* ไม่ใช่ behavior จริง`,
+❌ \`Expected "a-b", received "a--b"\` — ดี, fail ตรงบั๊ก
+
+GREEN: ยุบช่องว่างที่ติดกันก่อนแทนที่ด้วย dash → ✅ ผ่าน เทสต์นี้กลายเป็น regression test กันบั๊กเดิมกลับมา`,
       },
     ],
     source: mpSource("skills/engineering/tdd/SKILL.md"),
@@ -180,13 +206,19 @@ export function checkout(cart) {
     slug: "diagnose",
     name: "diagnose",
     tagline:
-      "ดีบักบั๊กยากอย่างมีระบบ: สร้าง feedback loop → reproduce → ตั้งสมมติฐาน → วัด → แก้ → กัน regression",
+      "ไล่บั๊กยากอย่างมีระบบ — สร้างสัญญาณ pass/fail ที่เชื่อถือได้ก่อน แล้วที่เหลือจะตามมาเอง",
     authorSlug: "matt-pocock",
     category: "Coding",
     tags: ["debugging", "performance", "feedback-loop", "regression", "workflow"],
     featured: true,
     summary:
-      "หัวใจคือสร้าง feedback loop ที่เร็ว deterministic และรันเองได้ ให้สัญญาณ pass/fail ของบั๊กก่อน แล้วทุกอย่างที่เหลือ (bisection, ทดสอบสมมติฐาน, ใส่ probe) ก็แค่บริโภคสัญญาณนั้น บังคับให้ตั้ง 3–5 สมมติฐานที่ falsifiable ก่อนลงมือทดสอบ",
+      "วิธีดีบักบั๊กยากแบบมีวินัย หัวใจคือสร้าง 'feedback loop' ที่เร็วและรันเองได้ ให้บอก pass/fail ของบั๊กได้ชัดเจน พอมีสัญญาณนี้แล้ว การหาสาเหตุ (ตัดทีละส่วน, ทดสอบสมมติฐาน) ก็แค่บริโภคสัญญาณนั้น ถ้าไม่มี loop ต่อให้จ้องโค้ดยังไงก็ไม่เจอ",
+    capabilities: [
+      "ช่วยสร้าง feedback loop ที่ reproduce บั๊กได้ (เทสต์ / สคริปต์ / ยิง request ซ้ำ)",
+      "ดันบั๊กที่เกิดเป็นพักๆ ให้เกิดบ่อยขึ้นจนดีบักได้",
+      "ตั้งสมมติฐาน 3–5 ข้อที่พิสูจน์ผิดได้ แล้วทดสอบทีละตัว",
+      "จบด้วย regression test + สรุปว่าจะกันบั๊กแบบนี้ในอนาคตยังไง",
+    ],
     whenToUse: [
       "บั๊กยากที่จ้องโค้ดเฉยๆ แล้วหาไม่เจอ",
       "บั๊กที่เกิดเป็นพักๆ (non-deterministic)",
@@ -195,28 +227,39 @@ export function checkout(cart) {
     benefits: [
       "เปลี่ยน 'เดา' เป็น 'วัด' ด้วย feedback loop ที่เชื่อถือได้",
       "ตั้งหลายสมมติฐานพร้อมกัน กันการ anchor กับไอเดียแรก",
-      "จบด้วย regression test ที่ผูกบั๊กไว้ถาวร + post-mortem",
+      "จบด้วย regression test ที่ผูกบั๊กไว้ถาวร",
+    ],
+    howItWorks: [
+      "สร้าง feedback loop ที่ให้สัญญาณบั๊กชัดและเร็ว",
+      "รัน loop จน reproduce บั๊กได้จริง",
+      "ตั้งสมมติฐานหลายข้อ เรียงตามความน่าจะเป็น",
+      "ใส่ probe ทีละตัวเพื่อชี้สาเหตุ แล้วแก้ + เขียน regression test",
     ],
     examples: [
       {
         title: "หน้า checkout เก็บเงินซ้ำเป็นบางครั้ง",
         prompt: "หน้า checkout เก็บเงินซ้ำเป็นบางครั้ง ช่วย diagnose ที",
-        result: `บั๊กเป็นพักๆ — เป้าหมาย Phase 1 ยังไม่ใช่ repro สะอาด แต่คือ **ยกอัตราการเกิดให้สูงพอจะดีบักได้**
-
-ผมจะสร้าง loop ที่ยิง \`checkout()\` ด้วย fixture เดิมซ้ำ 200 รอบแบบ parallel แล้วนับจำนวนครั้งที่ \`charge\` ถูกเรียกมากกว่า 1:
+        result: `บั๊กเป็นพักๆ — เป้าหมายยังไม่ใช่ repro สะอาด แต่คือ **ยกอัตราการเกิดให้สูงพอจะดีบักได้** ผมจะยิง \`checkout()\` ด้วย fixture เดิมซ้ำ 200 รอบแบบ parallel แล้วนับครั้งที่ \`charge\` ถูกเรียก > 1:
 
 \`\`\`bash
 node scripts/stress-checkout.mjs --runs 200 --parallel 8
 # → double-charged: 11 / 200  (5.5%)
 \`\`\`
 
-5.5% ดีบักได้ ตอนนี้ตั้งสมมติฐาน 3 ข้อ (falsifiable) เรียงตามน่าจะเป็น:
+5.5% ดีบักได้ ตั้งสมมติฐาน เช่น "retry ยิงซ้ำเมื่อ charge สำเร็จแต่ timeout" → ถ้าใช่ ปิด retry แล้วอัตราจะเป็น 0 ขอเทสต์ข้อนี้ก่อน`,
+      },
+      {
+        title: "API ช้าลงหลัง deploy",
+        prompt: "หลัง deploy เมื่อวาน endpoint /search ช้าขึ้น ~3 เท่า ช่วยหาสาเหตุ",
+        result: `Perf regression — logs มักไม่ช่วย ต้อง **วัดก่อน** ตั้ง baseline ด้วย timing harness แล้ว bisect:
 
-1. **retry wrapper ยิงซ้ำเมื่อ charge สำเร็จแต่ timeout** → ถ้าใช่ ปิด retry แล้วอัตราจะเป็น 0
-2. race ระหว่าง 2 request กดปุ่มรัว → ถ้าใช่ ใส่ idempotency key จะหาย
-3. webhook ตีกลับซ้ำ → ถ้าใช่ จะเห็นใน log ว่ามาจาก webhook ไม่ใช่ client
+\`\`\`bash
+# วัดเวอร์ชันก่อน-หลัง deploy ด้วย input เดียวกัน
+hyperfine 'curl -s localhost:3000/search?q=test'
+# before: 80ms   after: 240ms
+\`\`\`
 
-ขอเทสต์ #1 ก่อน — คุณเพิ่งแก้ส่วน retry มาเหรอเปล่า?`,
+จากนั้น bisect ระหว่าง 2 commit ของ deploy ทีละขั้น เพื่อชี้ commit ที่ทำให้ช้า แล้วค่อยดูว่าเป็น query plan เปลี่ยน หรือ N+1 — วัดทุกขั้น ไม่เดา`,
       },
     ],
     source: mpSource("skills/engineering/diagnose/SKILL.md"),
@@ -224,12 +267,19 @@ node scripts/stress-checkout.mjs --runs 200 --parallel 8
   {
     slug: "prototype",
     name: "prototype",
-    tagline: "สร้าง prototype แบบใช้แล้วทิ้งเพื่อตอบคำถามดีไซน์ก่อนลงมือจริง",
+    tagline:
+      "สร้างของต้นแบบใช้แล้วทิ้งเพื่อตอบคำถามดีไซน์ ก่อนลงแรงเขียนของจริง",
     authorSlug: "matt-pocock",
     category: "Coding",
     tags: ["prototyping", "design", "throwaway", "ui", "state"],
     summary:
-      "prototype คือโค้ดใช้แล้วทิ้งที่ตอบ 'คำถามหนึ่งข้อ' โดยเลือกสองสาขา: ถ้าคำถามคือ 'logic/state model ใช่ไหม' → ทำ terminal app เล็กๆ ที่รันได้; ถ้าคือ 'หน้าตาควรเป็นยังไง' → สร้าง UI หลายแบบสุดขั้วสลับกันได้ใน route เดียว เน้นไม่ persist ไม่ขัดเงา เสร็จแล้วลบหรือกลืนเข้าโค้ดจริง",
+      "ต้นแบบคือโค้ดใช้แล้วทิ้งที่มีไว้ตอบ 'คำถามเดียว' สกิลนี้เลือกสองทางให้: อยากรู้ว่า logic/สถานะถูกไหม → ทำ terminal app เล็กๆ ที่กดเล่นได้; อยากรู้ว่าหน้าตาควรเป็นยังไง → ทำ UI หลายแบบสลับดูในหน้าเดียว เน้นเร็ว ไม่ persist เสร็จแล้วเก็บแค่คำตอบ ตัวโค้ดทิ้ง",
+    capabilities: [
+      "ทำ terminal app เล็กๆ เพื่อลองเล่น state machine / business logic",
+      "สร้าง UI หลายแบบสุดขั้วในหน้าเดียว สลับเทียบกันได้",
+      "โชว์ state ทุกครั้งที่กด เพื่อเห็นว่าอะไรเปลี่ยน",
+      "สรุป 'คำตอบ' เก็บไว้ (NOTES/ADR) แล้วลบต้นแบบทิ้ง",
+    ],
     whenToUse: [
       "อยากลองว่า data model / state machine เวิร์กไหมก่อนผูกมัด",
       "อยาก mock up UI หลายแบบเทียบกันเร็วๆ",
@@ -238,19 +288,19 @@ node scripts/stress-checkout.mjs --runs 200 --parallel 8
     benefits: [
       "ตอบคำถามดีไซน์ด้วยของจริงที่จับต้องได้ ไม่ใช่เดาบนกระดาษ",
       "แยกชัดว่าเป็นโค้ดทิ้ง ไม่ปนกับ production",
-      "เก็บเฉพาะ 'คำตอบ' ไว้ (commit/ADR/NOTES) แล้วทิ้งตัว prototype",
+      "เก็บเฉพาะ 'คำตอบ' ไว้ แล้วทิ้งตัวต้นแบบ",
+    ],
+    howItWorks: [
+      "ระบุคำถามที่ต้องการตอบ (logic หรือ หน้าตา)",
+      "เลือกสาขา: terminal app (logic) หรือ UI variations (หน้าตา)",
+      "สร้างแบบเร็วๆ รันได้ด้วยคำสั่งเดียว ไม่ persist ไม่ขัดเงา",
+      "ได้คำตอบแล้วจดไว้ แล้วลบหรือกลืนเข้าโค้ดจริง",
     ],
     examples: [
       {
         title: "ลอง state machine ของ flow สมัครสมาชิก",
         prompt: "อยากลองว่า state machine ของ flow สมัครสมาชิกออกแบบโอเคไหม",
-        result: `คำถามคือ "logic/state model ใช่ไหม" → ไปสาขา LOGIC: ทำ terminal app เล็กๆ ที่รันได้ ดันให้ state machine ผ่านเคสที่คิดบนกระดาษยาก
-
-\`\`\`bash
-bun run prototypes/signup-machine.ts   # PROTOTYPE — ลบทิ้งได้
-\`\`\`
-
-ทุกครั้งที่สั่ง action มันจะ print state เต็มๆ ให้เห็นว่าอะไรเปลี่ยน:
+        result: `คำถามคือ "logic ถูกไหม" → ไปสาขา terminal app เล็กๆ ที่กดเล่นได้ ทุกครั้งที่สั่ง action จะ print state เต็มๆ:
 
 \`\`\`
 state: AWAITING_EMAIL
@@ -260,7 +310,20 @@ state: AWAITING_OTP   (otpSentAt=…)
 state: AWAITING_OTP   (attempts=1)
 \`\`\`
 
-เล่นจนเจอเคสที่ออกแบบพลาด (เช่น OTP หมดอายุระหว่างพิมพ์) แล้วค่อยจดคำตอบลง NOTES.md ก่อนลบ prototype`,
+เล่นจนเจอเคสที่ออกแบบพลาด (เช่น OTP หมดอายุระหว่างพิมพ์) แล้วจดคำตอบลง NOTES.md ก่อนลบต้นแบบ`,
+      },
+      {
+        title: "เทียบ layout การ์ด 3 แบบ",
+        prompt: "อยากเทียบ layout การ์ดสินค้า 3 แบบว่าอันไหนดีสุด",
+        result: `คำถามคือ "หน้าตาควรเป็นยังไง" → ไปสาขา UI variations: สร้าง 3 แบบในหน้าเดียว สลับด้วย search param + แถบลอยล่างจอ
+
+\`\`\`
+/prototype/cards?variant=grid     ← การ์ดใหญ่ รูปเด่น
+/prototype/cards?variant=compact  ← แถวแน่น ข้อมูลครบ
+/prototype/cards?variant=list     ← แนวยาว สแกนเร็ว
+\`\`\`
+
+กดสลับเทียบกันเร็วๆ เลือกได้แล้วค่อยกลืนแบบที่ชนะเข้าโค้ดจริง ที่เหลือทิ้ง`,
       },
     ],
     source: mpSource("skills/engineering/prototype/SKILL.md"),
@@ -268,36 +331,60 @@ state: AWAITING_OTP   (attempts=1)
   {
     slug: "grill-with-docs",
     name: "grill-with-docs",
-    tagline: "ซักไซ้แผนของคุณทีละข้อ พร้อมอัปเดต CONTEXT.md / ADR ไปในตัว",
+    tagline:
+      "ถูกซักทีละคำถามจนแผนรัดกุม พร้อมจดศัพท์และการตัดสินใจสำคัญเป็นเอกสารให้ไปในตัว",
     authorSlug: "matt-pocock",
     category: "Research",
     tags: ["planning", "documentation", "adr", "domain-modeling", "ddd"],
     featured: true,
     summary:
-      "เซสชันสัมภาษณ์ที่ท้าทายแผนของคุณกับ domain model เดิม ไล่ทีละกิ่งของต้นไม้การตัดสินใจ ทำให้คำศัพท์คม และอัปเดตเอกสาร (CONTEXT.md เป็น glossary, ADR สำหรับการตัดสินใจที่ย้อนยาก) ทันทีที่ตกผลึก — เป็นสกิลตัวเดียวกับที่ใช้ออกแบบเว็บ InvokeNotes นี้",
+      "เซสชันที่ AI ตั้งคำถามไล่บี้แผนของคุณทีละข้อ (พร้อมเสนอคำตอบที่แนะนำ) เพื่อปิดช่องโหว่ก่อนเขียนโค้ด ระหว่างคุยมันจะจดศัพท์ที่ตกลงกันลงไฟล์รวมนิยาม (glossary) และบันทึกเหตุผลของการตัดสินใจที่ย้อนยากเป็นเอกสาร (ADR) ให้อัตโนมัติ — เป็นสกิลตัวเดียวกับที่ใช้ออกแบบเว็บ InvokeNotes นี้",
+    capabilities: [
+      "ตั้งคำถามไล่ทีละข้อจนแผนไม่มีจุดคลุมเครือ (พร้อมคำตอบที่แนะนำ)",
+      "ช่วยให้คำศัพท์ในทีมตรงกัน — ถ้าใช้คำกำกวมหรือขัดกับนิยามเดิมจะทักทันที",
+      "จดนิยามศัพท์ลงไฟล์ glossary (CONTEXT.md) สดๆ ระหว่างคุย",
+      "บันทึกการตัดสินใจที่ย้อนยากเป็น ADR ให้ เฉพาะตอนที่คุ้มจริง",
+    ],
     whenToUse: [
-      "อยาก stress-test แผน/ดีไซน์ให้รอบด้านก่อนลงมือ",
-      "อยากให้คำศัพท์ในทีมตรงกันและคมขึ้น",
-      "อยากบันทึกการตัดสินใจสำคัญเป็นเอกสารระหว่างคุย",
+      "ก่อนเริ่มฟีเจอร์/ดีไซน์ใหญ่ อยากให้แผนรัดกุมก่อนลงมือ",
+      "อยากให้ทีมเรียกสิ่งเดียวกันด้วยคำเดียวกัน",
+      "อยากได้เอกสารการตัดสินใจโดยไม่ต้องมานั่งเขียนทีหลัง",
     ],
     benefits: [
       "จับช่องโหว่ของแผนก่อนเขียนโค้ดจริง",
       "glossary และ ADR ถูกอัปเดตสดระหว่างคุย ไม่ค้างไว้ทีหลัง",
       "เสนอ ADR เฉพาะตอนที่คุ้มจริง (ย้อนยาก + เซอร์ไพรส์ + เป็น trade-off)",
     ],
+    howItWorks: [
+      "สำรวจโค้ดและเอกสารเดิมก่อน เพื่อไม่ถามสิ่งที่หาเองได้",
+      "ถามทีละคำถาม พร้อมคำตอบที่แนะนำ รอคำตอบแล้วค่อยไปข้อถัดไป",
+      "พอตกลงศัพท์ได้ อัปเดตไฟล์ glossary ทันที",
+      "เจอการตัดสินใจที่ย้อนยาก → เสนอเขียน ADR",
+    ],
     examples: [
       {
         title: "grill ฟีเจอร์ comment",
         prompt: "อยากเพิ่มฟีเจอร์ comment ในเว็บ ช่วย grill หน่อย",
-        result: `ก่อนถาม ผมจะสำรวจโค้ด + CONTEXT.md ก่อน เพื่อไม่ถามสิ่งที่หาเองได้ จากนั้นถามทีละข้อพร้อมคำตอบที่แนะนำ
+        result: `ก่อนถาม ผมจะสำรวจโค้ด + glossary ก่อน เพื่อไม่ถามสิ่งที่หาเองได้ จากนั้นถามทีละข้อ
 
 **คำถามแรก** — comment ผูกกับอะไร?
 
-> glossary ปัจจุบันมี **Skill** และ **Author** แต่ยังไม่มี comment — comment เกาะที่ **Skill** (คุยกันใต้แต่ละสกิล) หรือเกาะที่ **Author**?
+> glossary ปัจจุบันมี **Skill** และ **Author** แต่ยังไม่มี comment — comment เกาะที่ **Skill** (คุยใต้แต่ละสกิล) หรือเกาะที่ **Author**?
 >
-> *แนะนำ:* เกาะที่ Skill — ตรงกับพฤติกรรม "อ่านสกิลแล้วอยากถาม/เสริม" มากกว่า
+> *แนะนำ:* เกาะที่ Skill — ตรงกับพฤติกรรม "อ่านสกิลแล้วอยากถาม/เสริม"
 
-พอคุณตอบ ผมจะอัปเดต CONTEXT.md ทันที แล้วค่อยไล่กิ่งถัดไป (เก็บแบบ nested ไหม, ใครลบได้, ฯลฯ)`,
+พอคุณตอบ ผมจะอัปเดต glossary ทันที แล้วไล่กิ่งถัดไป (เก็บแบบ nested ไหม, ใครลบได้)`,
+      },
+      {
+        title: "grill การเปลี่ยนไปใช้ DB จริง",
+        prompt: "อยากเปลี่ยนจาก mock data เป็น database จริง ช่วย grill",
+        result: `**คำถามแรก** — เลือก database แบบไหน?
+
+> ตอนนี้ข้อมูลเป็น array ใน \`lib/skills.ts\` (อ่านอย่างเดียว, ไม่มี relation ซับซ้อน) — จะไป **Postgres** (relational, เผื่อโตเป็น comment/rating) หรือ **SQLite/ไฟล์** (เบา, เหมาะ catalog อ่านมาก)?
+>
+> *แนะนำ:* Postgres ถ้าวางแผนมี user-generated content; SQLite ถ้ายังเป็น catalog อ่านอย่างเดียว
+
+อันนี้เป็นการตัดสินใจที่**ย้อนยาก** (lock-in) — ถ้าตกลงได้ ผมจะเสนอเขียนเป็น **ADR** ทันที`,
       },
     ],
     source: mpSource("skills/engineering/grill-with-docs/SKILL.md"),
@@ -305,39 +392,56 @@ state: AWAITING_OTP   (attempts=1)
   {
     slug: "handoff",
     name: "handoff",
-    tagline: "บีบบทสนทนาปัจจุบันเป็นเอกสารส่งต่อให้ agent ตัวใหม่ทำงานต่อ",
+    tagline:
+      "สรุปบทสนทนาตอนนี้เป็นเอกสารส่งต่อ ให้ session หรือคนใหม่ทำงานต่อได้ทันที",
     authorSlug: "matt-pocock",
     category: "Productivity",
     tags: ["context", "handoff", "summary", "workflow"],
     summary:
-      "สรุปบทสนทนาปัจจุบันเป็น handoff document ให้ agent ใหม่สานต่อได้ทันที เซฟไว้ใน temp directory ของ OS (ไม่ใช่ workspace) ไม่ทำซ้ำสิ่งที่มีใน PRD/plan/ADR/commit อยู่แล้ว (อ้างอิง path แทน) มีส่วน 'suggested skills' และ redact ข้อมูลอ่อนไหวออกให้",
+      "เวลาคุยกับ AI มายาวจน context ใกล้เต็ม สกิลนี้บีบทุกอย่างเป็นเอกสารส่งต่อสั้นๆ ให้ session ใหม่อ่านแล้วสานต่อได้เลย เซฟไว้ที่โฟลเดอร์ temp ของเครื่อง ไม่ทำซ้ำสิ่งที่มีในเอกสารอื่นอยู่แล้ว และตัดข้อมูลอ่อนไหวออกให้",
+    capabilities: [
+      "สรุปสถานะงาน + สิ่งที่ทำไปแล้ว / ที่ยังเหลือ เป็นเอกสารเดียว",
+      "อ้างอิงเอกสารเดิม (PRD / ADR / commit) ด้วย path แทนการก๊อปซ้ำ",
+      "แนะนำ skill ที่ session ใหม่ควรหยิบมาใช้ต่อ",
+      "ตัดข้อมูลอ่อนไหว (key / password / PII) ออกให้",
+    ],
     whenToUse: [
       "context ใกล้เต็ม อยากส่งงานต่อให้เซสชันใหม่",
-      "เปลี่ยนคน/เปลี่ยน agent มาทำงานต่อ",
+      "เปลี่ยนคน / เปลี่ยน agent มาทำงานต่อ",
       "อยากสรุปสถานะงานแบบหยิบไปทำต่อได้เลย",
     ],
     benefits: [
       "agent ใหม่สานต่อได้โดยไม่ต้องไล่อ่านทั้งบทสนทนา",
       "ไม่ทำซ้ำเอกสารที่มีอยู่ — อ้างอิง path/URL แทน",
-      "ตัดข้อมูลอ่อนไหว (key / password / PII) ออกให้",
+      "ปลอดภัย — ตัด secret ออกก่อนส่งต่อ",
+    ],
+    howItWorks: [
+      "ไล่อ่านสิ่งที่คุยกันมา สรุปสถานะปัจจุบัน",
+      "เขียนเอกสารส่งต่อ เซฟที่ temp dir ของ OS (ไม่ปนใน workspace)",
+      "ใส่ส่วน suggested skills + redact ข้อมูลอ่อนไหว",
     ],
     examples: [
       {
         title: "ส่งต่องาน deploy ให้เซสชันหน้า",
         prompt: "ช่วยทำ handoff ให้เซสชันหน้ามาทำเรื่อง deploy ต่อ",
-        result: `เขียน handoff doc แล้วเซฟไว้ที่ temp dir ของ OS (ไม่ปนใน workspace):
+        result: `เขียน handoff doc เซฟที่ temp dir ของ OS (ไม่ปนใน workspace):
 
 \`\`\`
 /tmp/handoff-deploy-2026-05-27.md
 \`\`\`
 
-โครงเอกสาร:
+โครงเอกสาร: **สถานะ** (Dockerfile.dev + compose เสร็จ, hot reload ผ่าน) · **เหลือทำ** (production Dockerfile) · **อ้างอิง** (\`docker-compose.yml\`, commit ล่าสุด — ไม่ก๊อปซ้ำ) · **Suggested skills** (\`/setup-pre-commit\`) · redact: ไม่มี secret`,
+      },
+      {
+        title: "เปลี่ยนคนมาทำ refactor ต่อ",
+        prompt: "เพื่อนจะมาทำ refactor auth ต่อ ช่วยทำ handoff ให้หน่อย",
+        result: `handoff doc ที่โฟกัสงาน refactor auth:
 
-- **สถานะ:** Dockerfile.dev + compose เสร็จ, hot reload ผ่าน (ดู docs/adr ที่เกี่ยว)
-- **เหลือทำ:** production Dockerfile (multi-stage, output: standalone)
-- **อ้างอิง (ไม่ก๊อปซ้ำ):** \`docker-compose.yml\`, commit ล่าสุด
-- **Suggested skills:** \`/setup-pre-commit\` ก่อน deploy
-- redact: ไม่มี secret ในบทสนทนานี้`,
+- **ทำไปแล้ว:** แยก \`AuthService\` ออกจาก controller, เทสต์เขียว 12/12
+- **กำลังทำ:** ย้าย session store จาก in-memory → Redis (ค้างที่ token refresh)
+- **อ้างอิง:** ADR เรื่อง auth (path), PR #42 (diff)
+- **ระวัง:** อย่าแตะ \`legacy-login.ts\` — มี ticket แยก
+- **Suggested skills:** \`/tdd\` ตอนเขียน Redis adapter`,
       },
     ],
     source: mpSource("skills/productivity/handoff/SKILL.md"),
@@ -345,12 +449,19 @@ state: AWAITING_OTP   (attempts=1)
   {
     slug: "write-a-skill",
     name: "write-a-skill",
-    tagline: "สร้าง agent skill ใหม่ให้มีโครงสร้างถูกต้องและทรัพยากรครบ",
+    tagline:
+      "สร้าง agent skill ใหม่ให้โครงดี อธิบาย trigger ชัด และแยกไฟล์/สคริปต์เมื่อจำเป็น",
     authorSlug: "matt-pocock",
     category: "Productivity",
     tags: ["skills", "authoring", "meta", "documentation"],
     summary:
-      "พาเขียน SKILL.md ใหม่อย่างเป็นระบบ ตั้งแต่ถาม requirement, ร่าง, ไปจนรีวิว เน้นว่า description คือสิ่งเดียวที่ agent เห็นตอนเลือก skill จึงต้องบอกชัดว่า 'ทำอะไร' + 'ใช้เมื่อไหร่ (triggers)' และใช้ progressive disclosure — แยกไฟล์/ใส่ script เมื่อจำเป็น",
+      "พาเขียนไฟล์ SKILL.md ใหม่ทีละขั้น ตั้งแต่ถามว่าจะทำอะไร ไปจนรีวิว จุดสำคัญคือ 'description' เป็นสิ่งเดียวที่ AI เห็นตอนเลือกหยิบสกิล จึงต้องบอกชัดว่าทำอะไร และให้หยิบใช้เมื่อไหร่",
+    capabilities: [
+      "ถาม requirement แล้วร่าง SKILL.md ให้ตามโครงมาตรฐาน",
+      "เขียน description ที่มี trigger ('Use when…') ให้ AI เลือกถูก",
+      "แนะนำว่าควรแยกไฟล์ หรือใส่ script ตอนไหน",
+      "มี checklist ให้รีวิวก่อนนำไปใช้จริง",
+    ],
     whenToUse: [
       "อยากสร้าง skill ใหม่ให้ agent",
       "skill เดิมโครงสร้างมั่ว หรืออธิบาย trigger ไม่ชัด",
@@ -361,11 +472,17 @@ state: AWAITING_OTP   (attempts=1)
       "โครงสร้างไฟล์เป็นมาตรฐาน (progressive disclosure)",
       "มี checklist รีวิวก่อนนำไปใช้จริง",
     ],
+    howItWorks: [
+      "ถามว่าสกิลครอบคลุมงานอะไร ใช้เคสไหน ต้องมีสคริปต์ไหม",
+      "ร่าง SKILL.md (เนื้อกระชับ) + description ที่ระบุ trigger",
+      "เสนอแยกไฟล์ / ใส่ script เมื่อเนื้อยาวหรือเป็นงาน deterministic",
+      "รีวิวตาม checklist แล้วส่งมอบ",
+    ],
     examples: [
       {
         title: "เขียน skill สร้าง changelog",
         prompt: "อยากเขียน skill สำหรับสร้าง changelog จาก git log",
-        result: `เริ่มจากถาม requirement สั้นๆ ก่อน (task อะไร, ใช้เคสไหน, ต้องมี script ไหม) แล้วร่าง description ที่ดี — สิ่งเดียวที่ agent เห็นตอนเลือก:
+        result: `เริ่มจากถาม requirement สั้นๆ แล้วร่าง description — สิ่งเดียวที่ AI เห็นตอนเลือก:
 
 \`\`\`md
 ---
@@ -374,7 +491,21 @@ description: Generate a grouped changelog from git history between two refs. Use
 ---
 \`\`\`
 
-สังเกตประโยคที่สอง "Use when…" คือ trigger ที่ทำให้ agent หยิบถูก จากนั้นเสนอโครง: SKILL.md (< 100 บรรทัด) + script \`scripts/changelog.mjs\` เพราะการ parse git log เป็น deterministic — ใส่ script ดีกว่าให้ generate ใหม่ทุกครั้ง`,
+ประโยคที่สอง "Use when…" คือ trigger ที่ทำให้ AI หยิบถูก จากนั้นเสนอใส่ script \`scripts/changelog.mjs\` เพราะการ parse git log เป็น deterministic`,
+      },
+      {
+        title: "เขียน skill รีวิว PR",
+        prompt: "อยากได้ skill ที่ช่วยรีวิว pull request",
+        result: `ถามก่อน: รีวิวเชิงอะไร (bug / style / security)? ผูกกับ GitHub ไหม? แล้วร่าง description ที่ trigger ชัด:
+
+\`\`\`md
+---
+name: review-pr
+description: Review a pull request for correctness bugs and risky changes. Use when the user asks to review a PR, a diff, or says "review this".
+---
+\`\`\`
+
+เนื้อหายาวกว่า 100 บรรทัด → เสนอแยกเป็น \`CHECKLIST.md\` (สิ่งที่ต้องดู) กับ \`SKILL.md\` (ขั้นตอนหลัก) ตามหลัก progressive disclosure`,
       },
     ],
     source: mpSource("skills/productivity/write-a-skill/SKILL.md"),
@@ -383,34 +514,53 @@ description: Generate a grouped changelog from git history between two refs. Use
     slug: "edit-article",
     name: "edit-article",
     tagline:
-      "ปรับบทความให้ชัดและกระชับ ด้วยการจัดลำดับ section ตามลำดับการพึ่งพาของข้อมูล",
+      "ปรับบทความให้อ่านลื่น จัดลำดับหัวข้อตาม 'อะไรต้องรู้ก่อน' แล้วรีไรต์ทีละส่วนให้กระชับ",
     authorSlug: "matt-pocock",
     category: "Writing",
     tags: ["writing", "editing", "clarity", "structure"],
     summary:
-      "แก้บทความอย่างมีหลักการ: แบ่งเป็น section ตามหัวข้อ มองข้อมูลเป็น directed acyclic graph แล้วจัดลำดับ section ให้เคารพการพึ่งพา (อะไรต้องรู้ก่อน) ยืนยันโครงกับผู้ใช้ก่อน แล้วค่อยเขียนใหม่ทีละ section ให้ชัด คุมไม่เกิน 240 ตัวอักษรต่อย่อหน้า",
+      "แก้บทความอย่างมีหลักการ: แบ่งเป็นหัวข้อ มองว่าข้อมูลพึ่งพากันเป็นลำดับ (อะไรต้องเข้าใจก่อน) จัดเรียงใหม่ให้ถูกลำดับ ยืนยันโครงกับคุณก่อน แล้วค่อยรีไรต์ทีละส่วนให้ชัดและกระชับ",
+    capabilities: [
+      "แบ่งบทความเป็นหัวข้อและสรุปแก่นของแต่ละส่วน",
+      "จัดลำดับหัวข้อใหม่ให้เคารพการพึ่งพาของเนื้อหา",
+      "รีไรต์ทีละส่วนให้ชัด คุมย่อหน้าไม่เกิน 240 ตัวอักษร",
+      "ยืนยันโครงกับคุณก่อนลงมือเขียน",
+    ],
     whenToUse: [
       "มี draft บทความที่อยากให้อ่านลื่นและกระชับขึ้น",
       "ลำดับการนำเสนอสับสน เนื้อหาพึ่งพากันผิดลำดับ",
-      "อยากรีไรต์ทีละ section อย่างมีโครง",
+      "อยากรีไรต์ทีละส่วนอย่างมีโครง",
     ],
     benefits: [
       "ลำดับเนื้อหาเคารพการพึ่งพา ผู้อ่านไม่งง",
       "ย่อหน้ากระชับ (≤ 240 ตัวอักษร) อ่านง่าย",
       "ยืนยันโครงก่อน ไม่รื้อทิ้งทีหลัง",
     ],
+    howItWorks: [
+      "แบ่งบทความตามหัวข้อ ดึงแก่นของแต่ละส่วน",
+      "เรียงลำดับใหม่ตามว่าอะไรต้องรู้ก่อน",
+      "ยืนยันโครงกับคุณ",
+      "รีไรต์ทีละส่วน คุมความยาวย่อหน้า",
+    ],
     examples: [
       {
         title: "ปรับบทความ 'เริ่มต้นกับ Docker'",
         prompt: "ช่วยปรับบทความ 'เริ่มต้นกับ Docker' ให้อ่านลื่นขึ้น",
-        result: `ขั้นแรก แบ่งบทความตามหัวข้อ แล้วมองเป็น DAG ของการพึ่งพา — เรียงใหม่ให้สิ่งที่ต้องรู้ก่อนมาก่อน:
+        result: `แบ่งตามหัวข้อแล้วมองเป็นลำดับการพึ่งพา — เรียงสิ่งที่ต้องรู้ก่อนมาก่อน:
 
-1. Image คืออะไร (พึ่งพา: ไม่มี)
-2. Container คืออะไร (พึ่งพา: 1)
-3. \`docker run\` (พึ่งพา: 1, 2)
-4. Volume & hot reload (พึ่งพา: 2, 3)
+1. Image คืออะไร
+2. Container คืออะไร (ต้องรู้ 1 ก่อน)
+3. \`docker run\`
+4. Volume & hot reload
 
-ตอนนี้บทความเดิมเอา "volume" ไว้ก่อน "container" ซึ่งผู้อ่านยังไม่รู้จัก container — สลับลำดับ ขอยืนยันโครงนี้ก่อนนะครับ แล้วผมจะรีไรต์ทีละ section คุมย่อหน้าไม่เกิน 240 ตัวอักษร`,
+บทความเดิมเอา "volume" ไว้ก่อน "container" ที่ผู้อ่านยังไม่รู้จัก — สลับลำดับ ขอยืนยันโครงนี้ก่อน แล้วผมจะรีไรต์ทีละส่วน คุมย่อหน้าไม่เกิน 240 ตัวอักษร`,
+      },
+      {
+        title: "กระชับ blog ยาวเกิน",
+        prompt: "blog 'ทำไมต้อง TypeScript' ยาวและวกวน ช่วยปรับให้กระชับ",
+        result: `แบ่งหัวข้อแล้วพบว่ามี 2 ส่วนพูดเรื่อง type safety ซ้ำกัน และตัวอย่างโค้ดมาก่อนนิยามที่มันพึ่งพา
+
+จัดใหม่: ปัญหาที่เจอ → type safety คืออะไร → ตัวอย่าง → ผลในทีมจริง รวมส่วนซ้ำเป็นหนึ่ง ตัดย่อหน้าที่ยาวเกินให้ ≤ 240 ตัวอักษร ขอยืนยันโครงก่อนรีไรต์`,
       },
     ],
     source: mpSource("skills/personal/edit-article/SKILL.md"),
@@ -419,12 +569,18 @@ description: Generate a grouped changelog from git history between two refs. Use
     slug: "setup-pre-commit",
     name: "setup-pre-commit",
     tagline:
-      "ติดตั้ง pre-commit hook ด้วย Husky + lint-staged (Prettier) พร้อม typecheck และ test",
+      "ตั้ง pre-commit hook ให้ format / typecheck / test อัตโนมัติทุกครั้งที่ commit",
     authorSlug: "matt-pocock",
     category: "DevOps",
     tags: ["husky", "lint-staged", "prettier", "git-hooks", "ci"],
     summary:
-      "ตั้งค่า Husky pre-commit hook ให้ครบในขั้นตอนเดียว: ตรวจ package manager ที่ repo ใช้จริง, ติดตั้ง husky/lint-staged/prettier, สร้าง config ที่ขาด, และใส่ hook ที่รัน lint-staged → typecheck → test (ปรับตาม script ที่มีจริง) ปิดท้ายด้วย commit เพื่อ smoke test",
+      "ตั้งค่า Husky + lint-staged + Prettier ให้ครบในขั้นตอนเดียว เพื่อให้ทุกครั้งที่ commit โค้ดถูก format และตรวจ type/test อัตโนมัติ โดยปรับตาม package manager และ script ที่ repo มีจริง ไม่ใส่มั่ว",
+    capabilities: [
+      "ตรวจ package manager ที่ repo ใช้ (npm / pnpm / yarn / bun)",
+      "ติดตั้งและตั้งค่า Husky + lint-staged + Prettier ให้",
+      "สร้าง hook ที่รัน lint-staged → typecheck → test (ปรับตาม script จริง)",
+      "commit ปิดท้ายเป็น smoke test ว่า hook ทำงานจริง",
+    ],
     whenToUse: [
       "อยากเพิ่ม pre-commit hook ใน repo",
       "อยากให้ format/typecheck/test อัตโนมัติตอน commit",
@@ -433,7 +589,13 @@ description: Generate a grouped changelog from git history between two refs. Use
     benefits: [
       "format อัตโนมัติทุก commit ด้วย Prettier",
       "กัน type error / test fail หลุดเข้า repo",
-      "ตรวจ package manager และ script ที่มีจริงให้ ไม่ใส่มั่ว",
+      "ปรับตาม package manager และ script ที่มีจริง ไม่ใส่มั่ว",
+    ],
+    howItWorks: [
+      "ตรวจ lockfile เพื่อหา package manager",
+      "ติดตั้ง devDependencies + npx husky init",
+      "เขียน .husky/pre-commit + .lintstagedrc + .prettierrc (ถ้ายังไม่มี)",
+      "commit เพื่อทดสอบว่า hook ทำงาน",
     ],
     examples: [
       {
@@ -446,18 +608,364 @@ npm i -D husky lint-staged prettier
 npx husky init
 \`\`\`
 
-สร้าง \`.husky/pre-commit\` (Husky v9+ ไม่ต้องมี shebang):
+สร้าง \`.husky/pre-commit\` (Husky v9+ ไม่ต้องมี shebang) ที่รัน \`npx lint-staged\` → \`npm run typecheck\` → \`npm run test\` แล้ว commit เพื่อ smoke test ทันที`,
+      },
+      {
+        title: "repo ไม่มี typecheck script",
+        prompt: "repo นี้ไม่มี script typecheck ตั้ง hook ให้หน่อย",
+        result: `ตรวจ package.json แล้วไม่เจอ script \`typecheck\` — ผมจะ **ตัดบรรทัดนั้นออก** จาก hook และบอกคุณ แทนที่จะใส่ค้างไว้ให้ commit พัง
 
 \`\`\`
+# .husky/pre-commit
 npx lint-staged
-npm run typecheck
 npm run test
 \`\`\`
 
-repo นี้ยังไม่มี script \`typecheck\` — ผมจะตัดบรรทัดนั้นออกและบอกคุณ แทนที่จะใส่ค้างไว้ให้ commit พัง จากนั้นสร้าง \`.lintstagedrc\` และ commit เพื่อ smoke test ทันที`,
+(ข้าม typecheck ไว้ก่อน — เพิ่ม \`"typecheck": "tsc --noEmit"\` ใน package.json เมื่อไหร่ ค่อยเติมบรรทัดกลับ)`,
       },
     ],
     source: mpSource("skills/misc/setup-pre-commit/SKILL.md"),
+  },
+  {
+    slug: "zoom-out",
+    name: "zoom-out",
+    tagline:
+      "บอก agent ให้ถอยมามองภาพรวม — ขอแผนที่ของโมดูลและผู้เรียกใช้ ในโค้ดส่วนที่ไม่คุ้น",
+    authorSlug: "matt-pocock",
+    category: "Coding",
+    tags: ["context", "code-navigation", "architecture", "understanding"],
+    summary:
+      "เวลาเจอโค้ดส่วนที่ไม่คุ้นแล้วงงว่ามันต่อกับอะไร สกิลนี้สั่งให้ agent ถอยขึ้นไปอีกชั้นของ abstraction แล้วร่าง 'แผนที่' ของโมดูลที่เกี่ยวข้องและใครเรียกใช้บ้าง โดยใช้คำศัพท์จาก glossary ของโปรเจกต์",
+    capabilities: [
+      "ถอยขึ้นอีกชั้น abstraction เพื่อให้เห็นภาพรวมแทนรายละเอียดบรรทัด",
+      "ร่างแผนที่โมดูลที่เกี่ยวข้อง + ใครเรียกใช้ (callers)",
+      "อธิบายด้วยคำศัพท์จาก glossary ของโปรเจกต์ ให้ตรงภาษาทีม",
+    ],
+    whenToUse: [
+      "เพิ่งเข้าโค้ดส่วนที่ไม่คุ้น ไม่รู้ว่ามันต่อกับอะไร",
+      "อยากเห็นว่าโมดูลนี้วางตัวยังไงในภาพใหญ่ก่อนลงไปแก้",
+      "หลงอยู่ในรายละเอียด อยากได้มุมมองระดับสูง",
+    ],
+    benefits: [
+      "เข้าใจบริบทเร็วก่อนลงมือแก้ ลดการแก้ผิดจุด",
+      "เห็นความเชื่อมโยง/ผู้เรียกใช้ที่อาจกระทบ",
+      "ใช้ภาษาเดียวกับทีม (glossary)",
+    ],
+    howItWorks: [
+      "ระบุโค้ดส่วนที่ไม่คุ้น",
+      "agent ถอยขึ้นอีกชั้นของ abstraction",
+      "ร่างแผนที่โมดูล + callers ด้วยคำศัพท์ใน glossary",
+    ],
+    examples: [
+      {
+        title: "เข้าใจโมดูล payment ที่ไม่คุ้น",
+        prompt: "ผมไม่รู้จักส่วน payment ในโปรเจกต์นี้เลย zoom out ให้หน่อย",
+        result: `ถอยขึ้นมาหนึ่งชั้น — แผนที่ส่วน payment (ใช้คำจาก glossary):
+
+\`\`\`
+Checkout ──calls──▶ PaymentService ──▶ ChargeGateway (external)
+                          │
+                          └──▶ PaymentRepository (Postgres)
+\`\`\`
+
+ผู้เรียก \`PaymentService\`: \`CheckoutController\` และ \`RetryWorker\` (2 ที่) จุดต้องระวังถ้าจะแก้คือ \`RetryWorker\` เพราะเรียกซ้ำได้ อยากเจาะตรงไหนต่อบอกได้`,
+      },
+      {
+        title: "หาภาพรวมฟีเจอร์ search",
+        prompt: "search ทำงานยังไงในโปรเจกต์นี้ ขอภาพรวมก่อน",
+        result: `\`\`\`
+SearchPage (UI) ──▶ /api/search ──▶ SearchService
+                                       ├──▶ QueryParser
+                                       └──▶ SearchIndex (read-only)
+\`\`\`
+
+ตรงนี้ไม่มีการเขียนกลับ index (read-only) ถ้าจะแก้ ranking ดูที่ \`SearchService.rank()\` ซึ่งมีผู้เรียกเดียว ปลอดภัยที่จะแตะ`,
+      },
+    ],
+    source: mpSource("skills/engineering/zoom-out/SKILL.md"),
+  },
+  {
+    slug: "caveman",
+    name: "caveman",
+    tagline:
+      "โหมดสื่อสารบีบอัด — ตัด filler ทิ้ง ลด token ~75% แต่เนื้อหาเทคนิคครบเป๊ะ",
+    authorSlug: "matt-pocock",
+    category: "Productivity",
+    tags: ["communication", "tokens", "concise", "mode"],
+    summary:
+      "โหมดตอบแบบ 'มนุษย์ถ้ำฉลาด' — ตัดคำเชื่อม คำเกริ่น คำสุภาพออกหมด เหลือแต่เนื้อเทคนิคล้วนๆ ลด token ลงราว 75% เปิดแล้วติดทุกคำตอบจนกว่าจะสั่งปิด แต่จะกลับมาพูดเต็มชั่วคราวตอนเตือนเรื่องอันตรายหรือการกระทำที่ย้อนไม่ได้",
+    capabilities: [
+      "ตอบแบบบีบอัด ตัด article/filler/คำสุภาพ ลด token ~75%",
+      "คงเนื้อเทคนิค โค้ด และข้อความ error ไว้เป๊ะ",
+      "ติดทุกคำตอบจนกว่าจะสั่ง 'stop caveman'",
+      "กลับมาพูดเต็มชั่วคราวตอนเตือนเรื่องอันตราย/ย้อนไม่ได้",
+    ],
+    whenToUse: [
+      "อยากประหยัด token หรืออยากได้คำตอบกระชับ",
+      "คุยงานเทคนิคเร็วๆ ไม่ต้องการคำเกริ่น",
+      "พิมพ์ 'caveman mode' / 'be brief'",
+    ],
+    benefits: [
+      "ลด token ลงมาก เร็วและถูกลง",
+      "เนื้อเทคนิคไม่หาย แค่ตัดน้ำออก",
+      "ปลอดภัย — เรื่องอันตรายยังอธิบายเต็ม",
+    ],
+    howItWorks: [
+      "ผู้ใช้สั่งเปิดโหมด (เช่น 'caveman mode')",
+      "ตัด filler/article/คำสุภาพ ใช้ลูกศรแทนเหตุผล (X -> Y)",
+      "คงโค้ด/term/error ไว้เป๊ะ",
+      "ปิดเมื่อสั่ง 'normal mode'",
+    ],
+    examples: [
+      {
+        title: "คำตอบสไตล์ caveman",
+        prompt: "ทำไม React component re-render?",
+        result: `> Inline obj prop -> new ref -> re-render. \`useMemo\`.
+
+(ปกติจะเขียนยาว 3–4 ประโยค — caveman เหลือบรรทัดเดียว เนื้อครบ ลด token ไปมาก)`,
+      },
+      {
+        title: "ข้อยกเว้นตอนคำสั่งอันตราย",
+        prompt: "ช่วยลบตาราง users ที (ตอนอยู่ในโหมด caveman)",
+        result: `**Warning:** คำสั่งนี้จะลบทุกแถวในตาราง \`users\` อย่างถาวร ย้อนกลับไม่ได้
+
+\`\`\`sql
+DROP TABLE users;
+\`\`\`
+
+Caveman resume. Verify backup exist first.
+
+(เห็นไหมว่าตอนเตือนเรื่องย้อนไม่ได้ มันดรอปโหมด caveman ชั่วคราวเพื่อพูดให้ชัด)`,
+      },
+    ],
+    source: mpSource("skills/productivity/caveman/SKILL.md"),
+  },
+  {
+    slug: "grill-me",
+    name: "grill-me",
+    tagline:
+      "ถูกสัมภาษณ์ไล่บี้แผนทีละข้อจนเข้าใจตรงกัน (เวอร์ชันเบาของ grill-with-docs ไม่ยุ่งเอกสาร)",
+    authorSlug: "matt-pocock",
+    category: "Research",
+    tags: ["planning", "design", "interview", "decision-tree"],
+    summary:
+      "AI จะสัมภาษณ์คุณไล่บี้ทุกแง่ของแผน ไล่ทีละกิ่งของต้นไม้การตัดสินใจ ทีละคำถาม พร้อมเสนอคำตอบที่แนะนำ ต่างจาก grill-with-docs ตรงที่ไม่ไปยุ่ง/อัปเดตเอกสาร (glossary/ADR) — เน้นทำให้แผนคมขึ้นล้วนๆ",
+    capabilities: [
+      "ตั้งคำถามไล่บี้แผนทีละข้อจนไม่เหลือจุดคลุมเครือ",
+      "ไล่ทุกกิ่งของต้นไม้การตัดสินใจ แก้ทีละ dependency",
+      "เสนอคำตอบที่แนะนำในทุกคำถาม",
+      "ถ้าหาคำตอบจากโค้ดได้ จะไปอ่านโค้ดเองแทนการถาม",
+    ],
+    whenToUse: [
+      "อยาก stress-test แผน/ดีไซน์เร็วๆ โดยไม่ต้องแตะเอกสาร",
+      "อยากให้คนช่วยจี้จุดอ่อนของไอเดีย",
+      "พิมพ์ 'grill me'",
+    ],
+    benefits: [
+      "เจอช่องโหว่ของแผนก่อนลงมือ",
+      "เบากว่า grill-with-docs — ไม่มีภาระอัปเดตเอกสาร",
+      "ได้คำตอบที่แนะนำช่วยตัดสินใจเร็ว",
+    ],
+    howItWorks: [
+      "ระบุแผน/ดีไซน์ที่อยากให้ซัก",
+      "ถามทีละคำถาม พร้อมคำตอบที่แนะนำ",
+      "อะไรที่หาในโค้ดได้ ไปอ่านเองแทนถาม",
+      "ไล่จนทุกกิ่งของการตัดสินใจถูกแก้",
+    ],
+    examples: [
+      {
+        title: "grill ดีไซน์ rate limit",
+        prompt: "อยากใส่ rate limiting ใน API ช่วย grill me",
+        result: `**คำถามแรก** — จะ limit ตามอะไร?
+
+> ตาม IP, ตาม API key, หรือตาม user? แต่ละแบบกันคนละภัย (IP กัน abuse ทั่วไป, key กันลูกค้ารายเดียวยิงรัว)
+>
+> *แนะนำ:* ตาม API key ถ้ามี auth อยู่แล้ว — ยุติธรรมต่อผู้ใช้หลังเดียวกัน
+
+ตอบแล้วไปข้อถัดไป (เก็บ counter ที่ไหน / เกินโควตาแล้วทำยังไง)`,
+      },
+      {
+        title: "ต่างจาก grill-with-docs ยังไง",
+        prompt: "grill-me ต่างจาก grill-with-docs ยังไง",
+        result: `เหมือนกันตรงสัมภาษณ์ไล่บี้แผนทีละข้อ ต่างกันที่:
+
+- **grill-me** — จบที่ความเข้าใจร่วม ไม่แตะไฟล์
+- **grill-with-docs** — ระหว่างคุยจะอัปเดต glossary (CONTEXT.md) และเขียน ADR ให้ด้วย
+
+เลือก grill-me เมื่ออยากคิดให้คมเร็วๆ เลือก grill-with-docs เมื่ออยากได้เอกสารติดมือ`,
+      },
+    ],
+    source: mpSource("skills/productivity/grill-me/SKILL.md"),
+  },
+  {
+    slug: "to-prd",
+    name: "to-prd",
+    tagline:
+      "เปลี่ยนบทสนทนาตอนนี้ให้เป็น PRD แล้วเปิดเป็น issue — ไม่สัมภาษณ์ แค่สังเคราะห์จากที่คุยมา",
+    authorSlug: "matt-pocock",
+    category: "Productivity",
+    tags: ["prd", "planning", "github", "spec"],
+    summary:
+      "หยิบบริบทที่คุยกันมาทั้งหมดมาสังเคราะห์เป็น PRD (problem, solution, user stories, decisions, testing, out-of-scope) โดยไม่สัมภาษณ์เพิ่ม แล้วเผยแพร่เข้า issue tracker พร้อม label ระหว่างนั้นจะมองหาโอกาสแยกเป็น deep module ที่เทสต์แยกได้",
+    capabilities: [
+      "สังเคราะห์บทสนทนา + ความเข้าใจโค้ดเป็น PRD เต็มรูป",
+      "ร่าง user stories จำนวนมากครอบคลุมทุกแง่",
+      "ระบุ implementation/testing decisions โดยไม่ผูกกับ file path",
+      "เผยแพร่ PRD เข้า issue tracker พร้อม label",
+    ],
+    whenToUse: [
+      "คุยจนตกผลึกแล้ว อยากได้ PRD โดยไม่ต้องตอบคำถามเพิ่ม",
+      "อยากแปลงสิ่งที่ discuss เป็นเอกสารทางการ + issue",
+      "ก่อนส่งงานให้ทีม/agent ลงมือ",
+    ],
+    benefits: [
+      "ได้ PRD ทันทีจากบริบทที่มี ไม่ต้องเริ่มใหม่",
+      "user stories ครอบคลุม ลดงานตกหล่น",
+      "เข้า issue tracker พร้อมใช้",
+    ],
+    howItWorks: [
+      "สำรวจ repo เข้าใจสถานะปัจจุบัน (ใช้ glossary + เคารพ ADR)",
+      "ร่างโมดูลหลักที่ต้องสร้าง/แก้ มองหา deep module — เช็คกับผู้ใช้",
+      "เขียน PRD ตาม template",
+      "เผยแพร่เข้า issue tracker + ใส่ label",
+    ],
+    examples: [
+      {
+        title: "ทำ PRD จากที่คุยเรื่อง comment",
+        prompt: "เราคุยเรื่องฟีเจอร์ comment กันมาพอแล้ว ช่วยทำ PRD",
+        result: `สังเคราะห์จากที่คุยมา (ไม่ถามเพิ่ม) — ร่าง PRD:
+
+**Problem** ผู้อ่านอยากแลกเปลี่ยนความเห็นใต้แต่ละ Skill
+**Solution** comment ผูกกับ Skill, nested 1 ชั้น
+**User stories**
+1. ในฐานะผู้อ่าน ฉันอยากคอมเมนต์ใต้ Skill เพื่อถามผู้สร้าง
+2. ...
+
+ก่อนเผยแพร่ ขอเช็คโมดูลหลัก: \`CommentService\` (deep module, เทสต์แยกได้) — ตรงกับที่คิดไหม?`,
+      },
+      {
+        title: "PRD เรื่องต่อ database จริง",
+        prompt: "ทำ PRD เรื่องย้าย mock data ไป Postgres",
+        result: `**Problem** ข้อมูลเป็น mock ใน \`lib/skills.ts\` แก้ทีต้อง deploy ใหม่
+**Solution** ย้ายไป Postgres + repository layer
+**Implementation decisions** \`SkillRepository\` (interface แคบ อ่าน/เขียน), schema: skills/authors/tags — ไม่ใส่ file path
+**Out of scope** auth, comment
+
+เผยแพร่เข้า issue tracker พร้อม label \`ready-for-agent\``,
+      },
+    ],
+    source: mpSource("skills/engineering/to-prd/SKILL.md"),
+  },
+  {
+    slug: "to-issues",
+    name: "to-issues",
+    tagline:
+      "แตกแผน/PRD เป็น GitHub issues แบบ vertical slice ที่หยิบทำแยกกันได้",
+    authorSlug: "matt-pocock",
+    category: "Coding",
+    tags: ["issues", "planning", "vertical-slice", "github", "breakdown"],
+    summary:
+      "แตกแผนเป็น issue ย่อยแบบ 'tracer bullet' — แต่ละอันเป็น vertical slice บางๆ ที่ตัดผ่านทุกชั้น (schema/API/UI/test) จบในตัว ไม่ใช่ horizontal slice ของชั้นเดียว แยกเป็น HITL (ต้องมีคนตัดสิน) กับ AFK (agent ทำเองจบ) แล้วเผยแพร่เข้า issue tracker ตามลำดับ dependency",
+    capabilities: [
+      "แตกแผน/PRD เป็น issue แบบ vertical slice ที่ demo ได้ในตัว",
+      "ระบุ dependency (blocked by) และชนิด HITL/AFK ของแต่ละ slice",
+      "ให้คุณรีวิว granularity/ลำดับก่อนสร้างจริง",
+      "เผยแพร่ issue ตามลำดับ blocker ก่อน พร้อม label",
+    ],
+    whenToUse: [
+      "มีแผน/PRD แล้ว อยากแตกเป็นตั๋วงานให้หยิบทำ",
+      "อยากได้ slice ที่ทำแยกกันได้/มอบหมายได้",
+      "เตรียมงานให้ AFK agent ลงมือ",
+    ],
+    benefits: [
+      "งานถูกแบ่งเป็นชิ้นที่ทำเสร็จแล้ว demo ได้ทันที",
+      "เห็น dependency ชัด ไม่ติดล็อกกันเอง",
+      "รีวิวก่อนสร้างจริง ปรับ granularity ได้",
+    ],
+    howItWorks: [
+      "รวบรวมบริบท / อ่าน issue อ้างอิงถ้ามี",
+      "ร่าง vertical slice (tracer bullet) แต่ละอันตัดทุกชั้น",
+      "โชว์เป็นลิสต์ให้ผู้ใช้รีวิว (title/type/blocked by) จนอนุมัติ",
+      "เผยแพร่ issue ตามลำดับ blocker ก่อน + label",
+    ],
+    examples: [
+      {
+        title: "แตกฟีเจอร์ comment เป็น issues",
+        prompt: "แตกฟีเจอร์ comment เป็น issues ให้หน่อย",
+        result: `แตกเป็น vertical slice (แต่ละอันตัดทุกชั้น จบในตัว):
+
+1. **แสดง comment แบบ read-only** (AFK) — schema + API GET + UI list + test · blocked by: ไม่มี
+2. **โพสต์ comment** (AFK) — API POST + form + test · blocked by: 1
+3. **ลบ comment ของตัวเอง** (AFK) · blocked by: 2
+4. **เลือกนโยบาย moderation** (HITL — ต้องตัดสิน) · blocked by: ไม่มี
+
+granularity โอเคไหม / ลำดับถูกไหม? อนุมัติแล้วผมเผยแพร่ตาม blocker ก่อน`,
+      },
+      {
+        title: "ทำไม vertical ไม่ใช่ horizontal",
+        prompt: "ทำไมแตกเป็น vertical slice ไม่ใช่แบ่งตาม layer",
+        result: `horizontal = แบ่งตามชั้น (ทำ schema ทั้งหมด แล้วค่อย API ทั้งหมด) → ไม่มีอะไร demo ได้จนกว่าจะครบทุกชั้น และเสี่ยงทำเกินจำเป็น
+
+vertical = แต่ละ issue ตัดผ่านทุกชั้นแต่แคบ ทำเสร็จแล้ว **ใช้งานจริงได้ทันที** ทีละนิด เห็นผลเร็ว ลดความเสี่ยง`,
+      },
+    ],
+    source: mpSource("skills/engineering/to-issues/SKILL.md"),
+  },
+  {
+    slug: "git-guardrails-claude-code",
+    name: "git-guardrails-claude-code",
+    tagline:
+      "ตั้ง hook ใน Claude Code บล็อกคำสั่ง git อันตราย (push, reset --hard, clean...) ก่อนรัน",
+    authorSlug: "matt-pocock",
+    category: "DevOps",
+    tags: ["git", "safety", "hooks", "claude-code", "guardrails"],
+    summary:
+      "ติดตั้ง PreToolUse hook ที่ดักและบล็อกคำสั่ง git อันตรายก่อน Claude จะรัน เช่น git push, reset --hard, clean -f, branch -D, checkout . เลือกได้ว่าติดเฉพาะโปรเจกต์หรือทุกโปรเจกต์ และปรับ pattern ที่บล็อกเพิ่ม/ลดได้",
+    capabilities: [
+      "ติดตั้ง PreToolUse hook ที่บล็อกคำสั่ง git อันตรายก่อนรัน",
+      "เลือก scope: เฉพาะโปรเจกต์ (.claude/) หรือทุกโปรเจกต์ (~/.claude/)",
+      "merge เข้า settings เดิมโดยไม่ทับของอื่น",
+      "ปรับรายการ pattern ที่บล็อก + มีขั้นตอน verify ให้",
+    ],
+    whenToUse: [
+      "กลัว agent เผลอรัน git push / reset --hard / clean",
+      "อยากกันคำสั่ง git ทำลายล้างใน Claude Code",
+      "ตั้ง git safety hook ครั้งแรก",
+    ],
+    benefits: [
+      "กันอุบัติเหตุ git ที่ย้อนยาก (force push / reset --hard)",
+      "ตั้งระดับโปรเจกต์หรือทั้งเครื่องก็ได้",
+      "ปรับแต่ง pattern ที่บล็อกได้ตามต้องการ",
+    ],
+    howItWorks: [
+      "ถาม scope: โปรเจกต์เดียว หรือทุกโปรเจกต์",
+      "คัดลอกสคริปต์ hook ไป .claude/hooks/ แล้ว chmod +x",
+      "เพิ่ม hook เข้า settings.json (merge ไม่ทับของเดิม)",
+      "verify ด้วยการยิงคำสั่งทดสอบ ดูว่า exit 2 + BLOCKED",
+    ],
+    examples: [
+      {
+        title: "ติดตั้งกัน git push อันตราย",
+        prompt: "ช่วยตั้ง guardrail บล็อก git push อันตรายใน Claude Code",
+        result: `ถามก่อน: ติดเฉพาะโปรเจกต์นี้ (\`.claude/settings.json\`) หรือทุกโปรเจกต์ (\`~/.claude/settings.json\`)?
+
+สมมติเลือกโปรเจกต์ — คัดสคริปต์ไป \`.claude/hooks/block-dangerous-git.sh\` + chmod +x แล้วเพิ่ม PreToolUse hook (matcher: Bash) เข้า settings (merge ไม่ทับของเดิม)
+
+บล็อก: \`git push\`, \`reset --hard\`, \`clean -f\`, \`branch -D\`, \`checkout .\``,
+      },
+      {
+        title: "ทดสอบว่า hook บล็อกจริง",
+        prompt: "ตั้งเสร็จแล้วเช็คยังไงว่ามันบล็อกจริง",
+        result: `ยิง payload ทดสอบเข้า hook ตรงๆ:
+
+\`\`\`bash
+echo '{"tool_input":{"command":"git push origin main"}}' | .claude/hooks/block-dangerous-git.sh
+\`\`\`
+
+ควรได้ exit code 2 + ข้อความ BLOCKED ที่ stderr — ถ้าเห็นแบบนั้น = ใช้งานได้`,
+      },
+    ],
+    source: mpSource("skills/misc/git-guardrails-claude-code/SKILL.md"),
   },
 ];
 

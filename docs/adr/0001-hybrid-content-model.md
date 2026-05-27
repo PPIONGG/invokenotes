@@ -1,5 +1,7 @@
 # Hybrid content model for Skills
 
+> **Status: superseded by [ADR 0003](./0003-catalog-over-raw-render.md).** The raw `SKILL.md` render described below was removed; the detail page is now fully curated and links out to the source instead.
+
 A Skill's detail page combines three layers rather than picking one: (1) curated explanation written for this site — what the skill is, when to use it, and what you gain — (2) the rendered original `SKILL.md` body, and (3) one or more usage Examples shown as prompt→result transcripts, plus Source and install links.
 
 ## Considered options

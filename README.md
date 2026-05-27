@@ -6,7 +6,7 @@
 
 ## ✨ ฟีเจอร์
 
-- **หน้า detail แบบ hybrid** ต่อสกิล — สรุป (ไทย) + เมื่อไหร่ควรใช้ + ได้อะไร + ตัวอย่างการทำงาน (transcript) + เรนเดอร์ `SKILL.md` ต้นฉบับ + วิธีติดตั้ง
+- **หน้า detail แบบ curated** ต่อสกิล — สรุปสั้น + ใช้ทำอะไรได้บ้าง + ใช้ตอนไหน + ได้อะไร + ทำงานยังไง + ตัวอย่างจริง (transcript) + วิธีติดตั้ง + ลิงก์ไปต้นฉบับบน GitHub
 - **กรองได้** ตามคำค้น / Category / Tags (ทำงานฝั่ง client)
 - **หน้าโปรไฟล์ผู้สร้าง (Author)** รวมสกิลของแต่ละคน
 - รองรับ **Docker + hot reload** สำหรับ dev
@@ -15,8 +15,8 @@
 
 - [Next.js 16](https://nextjs.org) (App Router) + TypeScript
 - Tailwind CSS v4
-- [lucide-react](https://lucide.dev) (icons) · [react-markdown](https://github.com/remarkjs/react-markdown) + rehype-highlight (เรนเดอร์ `SKILL.md`)
-- ตอนนี้ใช้ **mock data** (ยังไม่ต่อ database) — ข้อมูลสกิลอยู่ใน `lib/skills.ts` และเนื้อ `SKILL.md` ต้นฉบับอยู่ใน `content/skills/`
+- [lucide-react](https://lucide.dev) (icons) · [react-markdown](https://github.com/remarkjs/react-markdown) + rehype-highlight (เรนเดอร์ตัวอย่าง markdown)
+- ตอนนี้ใช้ **mock data** (ยังไม่ต่อ database) — ข้อมูลสกิลทั้งหมดอยู่ใน `lib/skills.ts`
 
 ## 🚀 เริ่มใช้งาน
 
@@ -46,9 +46,7 @@ app/
   skills/[slug]/page.tsx   หน้า detail ของสกิล (hybrid)
   authors/[slug]/page.tsx  หน้าโปรไฟล์ผู้สร้าง
 lib/
-  skills.ts                types + mock data + selectors (client-safe)
-  skill-content.ts         อ่าน body SKILL.md ฝั่ง server (fs)
-content/skills/            ไฟล์ SKILL.md ต้นฉบับ (verbatim)
+  skills.ts                types + mock data + selectors
 components/                SkillCard, FilterBar, MarkdownView, InstallTabs, ...
 CONTEXT.md                 อภิธานศัพท์ของโดเมน (glossary)
 docs/adr/                  Architecture Decision Records
@@ -57,10 +55,10 @@ docs/adr/                  Architecture Decision Records
 ## 📚 เอกสาร
 
 - [`CONTEXT.md`](./CONTEXT.md) — อภิธานศัพท์: Skill, Author, Source, Example, Category, Tag
-- [`docs/adr/`](./docs/adr) — การตัดสินใจเชิงสถาปัตยกรรม (hybrid content model, Thai-primary content)
+- [`docs/adr/`](./docs/adr) — การตัดสินใจเชิงสถาปัตยกรรม (Thai-primary content, catalog model ที่ลิงก์ไปต้นฉบับแทนการเรนเดอร์ SKILL.md)
 
 ## 🙏 เครดิตเนื้อหา
 
-สกิลในชุดเริ่มต้นนำมาจาก repo สาธารณะของ **[Matt Pocock](https://github.com/mattpocock)** — [`mattpocock/skills`](https://github.com/mattpocock/skills) ส่วนคำสรุป/คำอธิบายภาษาไทยและตัวอย่างเป็นการเรียบเรียงใหม่เพื่อการเรียนรู้ ไฟล์ `SKILL.md` ต้นฉบับใน `content/skills/` เป็นลิขสิทธิ์ของเจ้าของเดิมตาม [LICENSE ของ repo ต้นทาง](https://github.com/mattpocock/skills/blob/main/LICENSE) — เว็บนี้ทำเพื่อรวบรวมและอธิบาย ไม่ใช่การรับรองอย่างเป็นทางการ
+สกิลในชุดเริ่มต้นนำมาจาก repo สาธารณะของ **[Matt Pocock](https://github.com/mattpocock)** — [`mattpocock/skills`](https://github.com/mattpocock/skills) ส่วนคำสรุป/คำอธิบายภาษาไทยและตัวอย่างเป็นการเรียบเรียงใหม่เพื่อการเรียนรู้ เว็บนี้ **ไม่ได้ทำสำเนา** `SKILL.md` ต้นฉบับ แต่ลิงก์ไปยังไฟล์จริงบน GitHub ของเจ้าของโดยตรง (ดู [LICENSE ของ repo ต้นทาง](https://github.com/mattpocock/skills/blob/main/LICENSE)) — เว็บนี้ทำเพื่อรวบรวมและอธิบาย ไม่ใช่การรับรองอย่างเป็นทางการ
 
 แต่ละหน้าสกิลมีลิงก์ไปยังต้นฉบับและ repo เสมอ
