@@ -1,0 +1,26 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      # Bind-mount the source so edits on the host appear in the container.
+      - .:/app
+      # Anonymous volumes shadow the bind mount so the container keeps its own
+      # (linux/musl) node_modules and .next instead of the host's.
+      - /app/node_modules
+      - /app/.next
+    environment:
+      # File-system events don't cross the Windows->Linux boundary, so Next.js
+      # must poll for changes to get hot reload working inside Docker.
+      # NOTE: only webpack honours WATCHPACK_POLLING — Turbopack ignores it,
+      # which is why the command below forces `--webpack` instead of the default.
+      - WATCHPACK_POLLING=true
+      - CHOKIDAR_USEPOLLING=true
+      - NEXT_TELEMETRY_DISABLED=1
+    # Run the webpack dev server so file polling (and thus hot reload) works.
+    command: npm run dev -- --webpack -H 0.0.0.0
+    # Restart the dev server if it crashes while you're editing.
+    restart: unless-stopped

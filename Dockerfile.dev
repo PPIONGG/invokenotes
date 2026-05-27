@@ -1,0 +1,20 @@
+# Development image — runs `next dev` with hot reload.
+# Production builds should use a separate multi-stage Dockerfile.
+FROM node:22-alpine
+
+WORKDIR /app
+
+# Install dependencies first so this layer is cached unless the lockfile changes.
+# Installing inside the container pulls the correct musl/linux SWC binaries for Next.js.
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# Fallback copy for running the image without a bind mount.
+# In docker-compose the source is bind-mounted over this at runtime.
+COPY . .
+
+ENV NEXT_TELEMETRY_DISABLED=1
+EXPOSE 3000
+
+# -H 0.0.0.0 makes the dev server reachable from the host (not just container localhost).
+CMD ["npm", "run", "dev", "--", "-H", "0.0.0.0"]

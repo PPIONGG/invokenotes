@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# InvokeNotes
 
-## Getting Started
+> คู่มือสำรวจ **agent skills** — รวบรวมและอธิบายไฟล์ `SKILL.md` จากคอมมิวนิตี้ AI/engineering ว่าแต่ละสกิลคืออะไร ใครทำ ใช้เมื่อไหร่ ได้ประโยชน์อะไร และไปติดตั้ง/ดูต้นฉบับได้ที่ไหน
 
-First, run the development server:
+เว็บภาษาไทย (ผสมศัพท์อังกฤษ) สไตล์ dark dev-tool สำหรับทำความเข้าใจสกิลก่อนเอาไปใช้จริง
+
+## ✨ ฟีเจอร์
+
+- **หน้า detail แบบ hybrid** ต่อสกิล — สรุป (ไทย) + เมื่อไหร่ควรใช้ + ได้อะไร + ตัวอย่างการทำงาน (transcript) + เรนเดอร์ `SKILL.md` ต้นฉบับ + วิธีติดตั้ง
+- **กรองได้** ตามคำค้น / Category / Tags (ทำงานฝั่ง client)
+- **หน้าโปรไฟล์ผู้สร้าง (Author)** รวมสกิลของแต่ละคน
+- รองรับ **Docker + hot reload** สำหรับ dev
+
+## 🧱 Tech stack
+
+- [Next.js 16](https://nextjs.org) (App Router) + TypeScript
+- Tailwind CSS v4
+- [lucide-react](https://lucide.dev) (icons) · [react-markdown](https://github.com/remarkjs/react-markdown) + rehype-highlight (เรนเดอร์ `SKILL.md`)
+- ตอนนี้ใช้ **mock data** (ยังไม่ต่อ database) — ข้อมูลสกิลอยู่ใน `lib/skills.ts` และเนื้อ `SKILL.md` ต้นฉบับอยู่ใน `content/skills/`
+
+## 🚀 เริ่มใช้งาน
+
+### แบบปกติ (Node 22+)
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev      # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### แบบ Docker (มี hot reload)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+docker compose up --build -d   # ครั้งแรก
+docker compose up -d           # ครั้งต่อไป
+docker compose logs -f web     # ดู log
+docker compose down            # หยุด
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+> หมายเหตุ: บน Windows/Mac เว็บใน Docker รันด้วย `next dev --webpack` + file polling (`WATCHPACK_POLLING`) เพราะ Turbopack ไม่รับ event การแก้ไฟล์ผ่าน bind mount จาก host filesystem — ดูเหตุผลใน comment ของ `docker-compose.yml`
 
-## Learn More
+## 📁 โครงสร้างโปรเจกต์
 
-To learn more about Next.js, take a look at the following resources:
+```
+app/
+  page.tsx                 หน้า Home (hero + filter + grid)
+  skills/[slug]/page.tsx   หน้า detail ของสกิล (hybrid)
+  authors/[slug]/page.tsx  หน้าโปรไฟล์ผู้สร้าง
+lib/
+  skills.ts                types + mock data + selectors (client-safe)
+  skill-content.ts         อ่าน body SKILL.md ฝั่ง server (fs)
+content/skills/            ไฟล์ SKILL.md ต้นฉบับ (verbatim)
+components/                SkillCard, FilterBar, MarkdownView, InstallTabs, ...
+CONTEXT.md                 อภิธานศัพท์ของโดเมน (glossary)
+docs/adr/                  Architecture Decision Records
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📚 เอกสาร
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- [`CONTEXT.md`](./CONTEXT.md) — อภิธานศัพท์: Skill, Author, Source, Example, Category, Tag
+- [`docs/adr/`](./docs/adr) — การตัดสินใจเชิงสถาปัตยกรรม (hybrid content model, Thai-primary content)
 
-## Deploy on Vercel
+## 🙏 เครดิตเนื้อหา
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+สกิลในชุดเริ่มต้นนำมาจาก repo สาธารณะของ **[Matt Pocock](https://github.com/mattpocock)** — [`mattpocock/skills`](https://github.com/mattpocock/skills) ส่วนคำสรุป/คำอธิบายภาษาไทยและตัวอย่างเป็นการเรียบเรียงใหม่เพื่อการเรียนรู้ ไฟล์ `SKILL.md` ต้นฉบับใน `content/skills/` เป็นลิขสิทธิ์ของเจ้าของเดิมตาม [LICENSE ของ repo ต้นทาง](https://github.com/mattpocock/skills/blob/main/LICENSE) — เว็บนี้ทำเพื่อรวบรวมและอธิบาย ไม่ใช่การรับรองอย่างเป็นทางการ
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+แต่ละหน้าสกิลมีลิงก์ไปยังต้นฉบับและ repo เสมอ
