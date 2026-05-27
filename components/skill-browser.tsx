@@ -1,28 +1,41 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Search, SlidersHorizontal, X } from "lucide-react";
-import type { Category, SkillWithAuthor } from "@/lib/skills";
+import Link from "next/link";
+import { ArrowUpRight, Search, SlidersHorizontal, X } from "lucide-react";
+import type { Author, Category, SkillWithAuthor } from "@/lib/skills";
 import { SkillCard } from "@/components/skill-card";
+import { AuthorAvatar } from "@/components/author-avatar";
 import { cn } from "@/lib/utils";
 
 export function SkillBrowser({
   skills,
   categories,
   tags,
+  authors,
 }: {
   skills: SkillWithAuthor[];
   categories: Category[];
   tags: string[];
+  authors: Author[];
 }) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<Category | "All">("All");
   const [activeTags, setActiveTags] = useState<string[]>([]);
+  const [author, setAuthor] = useState<string>("All");
   const [showTags, setShowTags] = useState(false);
+
+  // Skill count per author — for the showcase cards.
+  const authorCounts = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const s of skills) m.set(s.authorSlug, (m.get(s.authorSlug) ?? 0) + 1);
+    return m;
+  }, [skills]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return skills.filter((s) => {
+      if (author !== "All" && s.authorSlug !== author) return false;
       if (category !== "All" && s.category !== category) return false;
       // OR semantics: keep a skill if it carries any of the active tags.
       if (activeTags.length > 0 && !activeTags.some((t) => s.tags.includes(t)))
@@ -40,9 +53,13 @@ export function SkillBrowser({
         .toLowerCase();
       return haystack.includes(q);
     });
-  }, [skills, query, category, activeTags]);
+  }, [skills, query, category, activeTags, author]);
 
-  const hasFilters = query !== "" || category !== "All" || activeTags.length > 0;
+  const hasFilters =
+    query !== "" ||
+    category !== "All" ||
+    activeTags.length > 0 ||
+    author !== "All";
 
   function toggleTag(tag: string) {
     setActiveTags((prev) =>
@@ -50,14 +67,91 @@ export function SkillBrowser({
     );
   }
 
+  // Single-select: clicking the active author again clears it back to "All".
+  function toggleAuthor(slug: string) {
+    setAuthor((prev) => (prev === slug ? "All" : slug));
+  }
+
   function reset() {
     setQuery("");
     setCategory("All");
     setActiveTags([]);
+    setAuthor("All");
   }
 
   return (
     <div className="space-y-5">
+      {/* Authors showcase — doubles as the author filter */}
+      <div>
+        <div className="mb-2 flex items-center justify-between">
+          <p className="text-xs uppercase tracking-wide text-faint">ผู้สร้าง</p>
+          {author !== "All" && (
+            <button
+              onClick={() => setAuthor("All")}
+              className="text-xs text-muted transition-colors hover:text-foreground"
+            >
+              ดูทุกคน
+            </button>
+          )}
+        </div>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {authors.map((a) => {
+            const active = author === a.slug;
+            return (
+              <div
+                key={a.slug}
+                className={cn(
+                  "rounded-xl border p-4 transition-colors",
+                  active
+                    ? "border-accent/50 bg-accent/5"
+                    : "border-border bg-surface hover:border-border-strong",
+                )}
+              >
+                <button
+                  onClick={() => toggleAuthor(a.slug)}
+                  aria-pressed={active}
+                  className="block w-full text-left"
+                >
+                  <div className="flex items-center gap-3">
+                    <AuthorAvatar author={a} size="md" />
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <span className="font-medium text-foreground">
+                          {a.name}
+                        </span>
+                        <span
+                          className={cn(
+                            "rounded-full border px-1.5 text-[10px]",
+                            a.kind === "self"
+                              ? "border-accent/30 bg-accent/10 text-accent"
+                              : "border-border bg-surface-2 text-muted",
+                          )}
+                        >
+                          {a.kind === "self" ? "ของฉัน" : "Community"}
+                        </span>
+                      </div>
+                      <p className="truncate text-xs text-muted">{a.title}</p>
+                    </div>
+                  </div>
+                </button>
+                <div className="mt-3 flex items-center justify-between border-t border-border pt-3 text-xs">
+                  <span className="text-faint">
+                    {authorCounts.get(a.slug) ?? 0} สกิล
+                  </span>
+                  <Link
+                    href={`/authors/${a.slug}`}
+                    className="inline-flex items-center gap-0.5 text-muted transition-colors hover:text-accent"
+                  >
+                    ดูโปรไฟล์
+                    <ArrowUpRight className="h-3 w-3" />
+                  </Link>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Search + tag toggle */}
       <div className="flex flex-col gap-3 sm:flex-row">
         <div className="relative flex-1">

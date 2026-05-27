@@ -54,6 +54,7 @@ export default function Home() {
           skills={skillsWithAuthors}
           categories={allCategories}
           tags={allTags}
+          authors={authors}
         />
       </section>
     </div>
