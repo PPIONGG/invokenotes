@@ -1,15 +1,19 @@
-import { Sparkles } from "lucide-react";
+import Link from "next/link";
+import { ArrowUpRight, Boxes, Sparkles } from "lucide-react";
 import {
   skillsWithAuthors,
   allCategories,
   allTags,
   authors,
 } from "@/lib/skills";
+import { recipes, featuredRecipes } from "@/lib/recipes";
 import { SkillBrowser } from "@/components/skill-browser";
+import { RecipeCard } from "@/components/recipe-card";
 
 export default function Home() {
   const stats = [
     { label: "skills", value: skillsWithAuthors.length },
+    { label: "recipes", value: recipes.length },
     { label: "authors", value: authors.length },
     { label: "categories", value: allCategories.length },
   ];
@@ -47,6 +51,35 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Recipes showcase — how to combine skills for a real task */}
+      {featuredRecipes.length > 0 && (
+        <section className="mx-auto max-w-6xl px-4 pt-10 sm:px-6">
+          <div className="mb-4 flex items-end justify-between gap-4">
+            <div>
+              <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight text-foreground">
+                <Boxes className="h-5 w-5 text-accent" />
+                Recipes
+              </h2>
+              <p className="mt-1 text-sm text-muted">
+                ร้อยหลาย skill เป็น flow เดียวสำหรับงานจริง — หยิบตัวไหนตอนไหน
+              </p>
+            </div>
+            <Link
+              href="/recipes"
+              className="inline-flex shrink-0 items-center gap-1 text-sm text-muted transition-colors hover:text-accent"
+            >
+              ดูทั้งหมด
+              <ArrowUpRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {featuredRecipes.map((recipe) => (
+              <RecipeCard key={recipe.slug} recipe={recipe} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Browser */}
       <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6">

@@ -35,3 +35,19 @@ _Avoid_: Group, type, section.
 **Tag**:
 A free-form keyword attached to a Skill for finer filtering and discovery. A Skill may have many. Secondary to Category.
 _Avoid_: Label, keyword, topic.
+
+**Recipe**:
+A curated, ordered walkthrough of a real-life situation — building a full-stack web app, shipping a bug fix — that shows which Skills to invoke and in what order to reach an outcome. Made of ordered **Steps**, and surfaces the full set of Skills it draws on as a "parts list" up top (the computer-shop analogy: individual components → one assembled machine). A Skill may appear in many Recipes (many-to-many). A Recipe carries no Author — it is InvokeNotes's own editorial sequencing, often combining Skills from several different Authors, so attributing it to one figure would misrepresent it. Distinct from an **Example**, which demonstrates a single Skill in isolation; a Recipe sequences several Skills across a whole task.
+_Avoid_: Workflow (that is a Tag), Bundle (a Recipe is ordered, not a loose set), Tutorial, Guide.
+
+**Step**:
+One ordered stage of a Recipe — a phase of the work, what you do at that point, and the prompt you'd give. A Step may invoke zero or more Skills, referenced by slug and always present in the catalog (so every cited Skill stays clickable and installable); a Step with no Skill is plain connective narrative (e.g. "deploy to Vercel").
+_Avoid_: Play, Stage, Task.
+
+**Prerequisite**:
+What a reader should have in place before starting a Recipe. Two kinds: free-text readiness ("Node 22+", "comfortable with TypeScript") and a reference to another **Recipe** you should complete first — a backward Recipe→Recipe dependency. A prerequisite Recipe must exist in the catalog and the dependencies must not form a cycle. Strictly backward-looking: the forward "what to do next" view is a separate concern and is simply the inverse of these edges, not a stored field.
+_Avoid_: Dependency (too broad), Requirement, Next/Related (those point the other way).
+
+**Goal**:
+The single kind of work a Recipe is for — what you are trying to do — one of Build, Fix, Improve, or Ship. Each Recipe has exactly one, and it is the primary axis for browsing Recipes. It is the Recipe's counterpart to a Skill's **Category**, but a distinct concept: a Skill's Category is the kind of work one skill assists, whereas a Goal is the situation a whole Recipe addresses (a Recipe spans many Categories). It is not the specific objective of one Recipe — that is its title and tagline — but the class of objective. "Understand" is deliberately not a Goal: understanding is a Step on the way to building, fixing, or improving, not an end in itself.
+_Avoid_: Category (that is the Skill axis), Track, Intent (both considered and rejected), Type, Tag (free-form, many per item).

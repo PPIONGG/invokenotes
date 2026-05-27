@@ -5,6 +5,7 @@ import {
   ArrowLeft,
   ArrowUpRight,
   BookOpen,
+  Boxes,
   Check,
   ChevronRight,
   ExternalLink,
@@ -16,6 +17,7 @@ import {
   Zap,
 } from "lucide-react";
 import { getSkill, getAuthor, skills } from "@/lib/skills";
+import { getRecipesUsingSkill } from "@/lib/recipes";
 import { CategoryBadge } from "@/components/category-badge";
 import { TagPill } from "@/components/tag-pill";
 import { AuthorAvatar } from "@/components/author-avatar";
@@ -51,6 +53,7 @@ export default async function SkillPage({
   if (!skill) notFound();
 
   const author = getAuthor(skill.authorSlug);
+  const recipes = getRecipesUsingSkill(skill.slug);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
@@ -172,6 +175,34 @@ export default async function SkillPage({
               ))}
             </div>
           </section>
+
+          {/* Recipes that use this skill — cross-link from slug refs */}
+          {recipes.length > 0 && (
+            <section>
+              <SectionHeading icon={<Boxes className="h-4 w-4" />}>
+                เรซิพีที่ใช้สกิลนี้
+              </SectionHeading>
+              <div className="space-y-2">
+                {recipes.map((recipe) => (
+                  <Link
+                    key={recipe.slug}
+                    href={`/recipes/${recipe.slug}`}
+                    className="group flex items-center justify-between gap-3 rounded-xl border border-border bg-surface p-4 transition-colors hover:border-accent/40 hover:bg-surface-2"
+                  >
+                    <span className="min-w-0">
+                      <span className="block text-sm font-medium text-foreground">
+                        {recipe.title}
+                      </span>
+                      <span className="mt-0.5 block truncate text-xs text-muted">
+                        {recipe.tagline}
+                      </span>
+                    </span>
+                    <ArrowUpRight className="h-4 w-4 shrink-0 text-faint transition-colors group-hover:text-accent" />
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
 
           {/* Go to source — the raw SKILL.md lives on GitHub, not rendered here */}
           <a

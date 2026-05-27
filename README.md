@@ -8,6 +8,7 @@
 
 - **หน้า detail แบบ curated** ต่อสกิล — สรุปสั้น + ใช้ทำอะไรได้บ้าง + ใช้ตอนไหน + ได้อะไร + ทำงานยังไง + ตัวอย่างจริง (transcript) + วิธีติดตั้ง + ลิงก์ไปต้นฉบับบน GitHub
 - **กรองได้** ตามคำค้น / Category / Tags (ทำงานฝั่ง client)
+- **Recipes** — playbook เรียงลำดับขั้นว่าจะหยิบ skill ไหนตอนไหนสำหรับงานจริง (เช่น สร้างเว็บ full-stack 1 โปรเจกต์) พร้อม cross-link ไป-กลับกับหน้าสกิล · กรองตาม **Goal** (Build/Fix/Improve/Ship) · มี badge ความยาก/เวลา, prerequisite, ผลลัพธ์ที่ได้, ปุ่ม copy prompt และเช็ก step ที่ทำแล้ว (เก็บใน localStorage)
 - **หน้าโปรไฟล์ผู้สร้าง (Author)** รวมสกิลของแต่ละคน
 - รองรับ **Docker + hot reload** สำหรับ dev
 
@@ -42,19 +43,22 @@ docker compose down            # หยุด
 
 ```
 app/
-  page.tsx                 หน้า Home (hero + filter + grid)
-  skills/[slug]/page.tsx   หน้า detail ของสกิล (hybrid)
+  page.tsx                 หน้า Home (hero + Recipes showcase + filter + grid)
+  skills/[slug]/page.tsx   หน้า detail ของสกิล (curated + เรซิพีที่ใช้สกิลนี้)
   authors/[slug]/page.tsx  หน้าโปรไฟล์ผู้สร้าง
+  recipes/page.tsx         หน้า index ของ Recipes
+  recipes/[slug]/page.tsx  หน้า detail ของเรซิพี (parts list + ขั้นตอน)
 lib/
-  skills.ts                types + mock data + selectors
-components/                SkillCard, FilterBar, MarkdownView, InstallTabs, ...
+  skills.ts                types + mock data + selectors ของ Skill
+  recipes.ts               types + mock data + selectors ของ Recipe/Step
+components/                SkillCard, RecipeCard, RecipeBrowser, RecipeSteps, SkillChip, MarkdownView, ...
 CONTEXT.md                 อภิธานศัพท์ของโดเมน (glossary)
 docs/adr/                  Architecture Decision Records
 ```
 
 ## 📚 เอกสาร
 
-- [`CONTEXT.md`](./CONTEXT.md) — อภิธานศัพท์: Skill, Author, Source, Example, Category, Tag
+- [`CONTEXT.md`](./CONTEXT.md) — อภิธานศัพท์: Skill, Author, Source, Example, Category, Tag, Recipe, Step, Prerequisite, Goal
 - [`docs/adr/`](./docs/adr) — การตัดสินใจเชิงสถาปัตยกรรม (Thai-primary content, catalog model ที่ลิงก์ไปต้นฉบับแทนการเรนเดอร์ SKILL.md)
 
 ## 🙏 เครดิตเนื้อหา
